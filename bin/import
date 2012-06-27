@@ -1,0 +1,131 @@
+#!/usr/bin/env node
+
+var redis   = require('redis');
+var glob    = require('glob');
+var fs      = require('fs');
+var lazy    = require('lazy');
+var flow    = require('flow');
+var program = require('commander');
+
+program
+  .version('1.0.1')  
+  .usage('[options] <path>')
+  .option('-s, --server <server>', 'Redis server')
+  .option('-p, --port <port>', 'Redis port', parseInt)
+  .option('-d, --database <database>', 'Redis database. Default is 0', parseInt)
+  .option('-a, --auth <password>', 'Redis authentication')
+  .option('-f, --flush', 'Flush all data first')
+  .option('--prefix [prefix]', 'Set a prefix.', '')
+  .option('--quiet', 'No output to the terminal')
+  .parse(process.argv);
+  
+  
+
+var client  = redis.createClient(program.port, program.server);
+var start   = new Date().getTime();
+var prefix  = program.prefix;
+var path, bar;
+
+//redis auth
+if(program.auth){
+  client.auth(program.auth);
+}
+
+//redis database
+if(program.database){
+  client.select(program.database);
+}
+
+
+program.path = program.args[0];
+
+//check if a path is given
+if(!program.path){
+  console.log('No path given');
+  process.exit(1);
+}
+
+//check if absolute or relative path
+if(program.path[0] != '/'){
+  path = process.cwd() + '/';
+}
+path += program.path;
+
+//if not quiet, initialize the progress bar
+if(!program.quiet){
+  bar = require('progress-bar').create(process.stdout);
+}
+
+
+if(program.flush){
+  client.keys(prefix + '*', function(err, results){
+    var transaction = client.multi();
+    for(var i in results){
+      transaction.del(results[i]);
+    }
+    transaction.exec();
+  });
+}
+
+
+
+//find all domains files
+glob('**/domains', {cwd: path}, function(err, files){
+  
+  var done = 0;
+  var total = files.length;
+  
+  //Loop files
+  flow.serialForEach(files, function(file){
+    
+    var next = this;
+    
+    //get name and path
+    var name = file.replace('/domains', '').replace('/', '_');
+    var full_path = path + '/' + file;
+    
+    //update processbar to show the current name
+    if(bar){
+      bar.format = '$bar; $percentage;% loading ' + name;
+      bar.update(done/total);
+    }
+    
+    
+    (function(name, full_path){
+      //start a redis "transation"
+      var transaction = client.multi();
+      
+      //read the domains file line by line
+      new lazy(fs.createReadStream(full_path)).lines.forEach(function(domain){
+        //convert bytes to string
+        domain = domain.toString();
+        //add to the redis set
+        transaction.sadd(prefix + name, domain);        
+      })
+      //file reading done
+      .on('pipe', function(){
+        //execute transaction
+        transaction.exec(function(err){
+          next();
+        });
+  	  });
+  	  
+    })(name, full_path);
+    
+  }, function(){
+    done++;
+    if(bar){
+      if(done == total){
+        var end = new Date().getTime() - start;
+        bar.format = '$bar; $percentage;% DONE in ' + (end / 1000) + 's\n';
+      }
+    
+      //update progressbar
+      bar.update(done/total);
+    }
+  }, function(){
+    //everything is done
+    process.exit(0);
+  }); 
+});
+
