@@ -4,6 +4,10 @@
     "url": "http://s-team.at",
     "keywords": ["squid", "proxy", "filter", "url", "redirect_programm"],
     "author": "Philipp Waldmann <philipp.waldmann@s-team.at>",
+    "repository": {
+      "type": "git",
+      "url": "git://github.com/PhilWaldmann/squid3_sentry.git"
+    },
     "dependencies": {
         "redis": ">=0.7.2",
         "glob": ">=3.1.9",
