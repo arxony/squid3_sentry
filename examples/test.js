@@ -13,40 +13,12 @@ var core = new Core({
 Squid.core = core;
 
 core.addRule({
-  name: 'filetype',
+  name: 'categories from file',
   allow: false,
-  filetypes: ['swf', 'fla', 'flv'],
+  domain_files: ['test/domain_files/black'], //, 'test/domain_files/white'],
   redirect: 'no-flash.com'
 });
 
-core.addRule({
-  name: 'a',
-  allow: false,
-  matches: ['*.a-team.at', 'a-team.at'],
-  redirect: 'aaa.com'
-});
-
-core.addRule({
-  name: 'b',
-  allow: false,
-  categories: ['porn', 'spyware', 'test', 'sex_lingerie', 'sex_education'],
-  groups: ['CN=Keinporn,CN=Users,DC=dabeach,DC=lan'],
-  redirect: 'no-porn.com'
-});
-
-core.addRule({
-  name: 'c',
-  allow: false,
-  matches: ['*.c-team.at', 'a-team.at'],
-  redirect: 'c-redirect'
-});
-
-core.addRule({
-  name: 'default',
-  allow: false,
-  redirect: 'specific-time.com',
-  times: [{from:'16:30', to:'24:00'}]
-});
 
 
 function test(urls){  

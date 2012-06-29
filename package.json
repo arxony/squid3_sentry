@@ -11,7 +11,7 @@
     "dependencies": {
         "redis": ">=0.7.2",
         "glob": ">=3.1.9",
-        "lazy": ">=1.0.8",
+        "buffered-reader": ">=0.2.3",
         "async": ">=0.1.22",
         "progress-bar": ">=0.1.1",
         "commander": ">=0.6.0",
@@ -30,7 +30,7 @@
         "test": "./test",
         "bin": "./bin"
     },
-    "version": "1.0.1",
+    "version": "1.0.2",
     "scripts": {
         "test": "vows test/*-test.js --spec"
     },

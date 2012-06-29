@@ -6,6 +6,10 @@ var core = new Core({
   redirect: 'default_redirect.com'
 });
 
+core.addRule({
+  name: 'default_rule',
+  redirect: 'localhost/deny?domain=[domain]&user=[user]&rule=[name]'
+});
 
 var _w = vows._w;
 
@@ -35,6 +39,16 @@ vows.describe('Core').addBatch({
       },
       'is the same as the shared instance': function(t){
         assert.deepEqual(t, Core.getSharedInstance());
+      }
+    },
+    
+    'Url placeholders':{
+      topic: function(){
+        core.isAllowed({domain:'google.com', user: 'phil'}, _w(this.callback));
+      },
+      
+      'are replaced with values': function(t){
+        assert.equal(t, 'localhost/deny?domain=google.com&user=phil&rule=default_rule');
       }
     }
     

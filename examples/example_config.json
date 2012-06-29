@@ -1,0 +1,11 @@
+{
+  "name": "test",
+  "redirect": "github.com",
+  "rules":[{
+    "name": "allow github",
+    "matches": ["*gitub*"]
+  },{
+    "name": "deny all",
+    "allowed": false
+  }]
+}
