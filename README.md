@@ -50,6 +50,7 @@ Params:
 * ```redis host```: url or domain of your redis host (e.g. ```localhost```)
 * ```redis port```: The port of your redis server
 * ```redis password```: If you use redis authentication.
+* ```rule_sources```: Array of sources. Currently only 'config' and 'redis' is available. 
 * ```rules```: Array of rule definitions. (only via config file)
 
 

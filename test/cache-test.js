@@ -11,6 +11,9 @@ var cache = new Cache({
     dn: 'CN=ldap_auth,CN=Users,DC=dabeach,DC=lan',
     password: 'ooDahs0i',
     base: 'DC=dabeach,DC=lan'
+  },
+  redis:{
+    host: 'localhost'
   }
 });
 
