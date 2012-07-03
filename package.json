@@ -16,7 +16,8 @@
         "progress-bar": ">=0.1.1",
         "commander": ">=0.6.0",
         "netmask": ">=0.0.2",
-        "ldapjs": ">=0.5.0"
+        "ldapjs": ">=0.5.0",
+        "bunyan": ">=0.10.0"
     },
     "devDependencies": {
         "vows": ">= 0.6.x"
@@ -30,7 +31,7 @@
         "test": "./test",
         "bin": "./bin"
     },
-    "version": "1.0.2",
+    "version": "1.0.3",
     "scripts": {
         "test": "vows test/*-test.js --spec"
     },
