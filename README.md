@@ -43,6 +43,8 @@ Params:
     
 
 * ```redirect```: The url to redirect the user if something is blocked
+* ```log```: Path to the log file. [Bunyan](https://github.com/trentm/node-bunyan) is used as a logger.
+* ```cache_time```: Cache time in milliseconds. Cache will be cleated after that time (e.g. 300000 for 5 mins)
 * ```ldap url```: The url to your ldap server (e.g. ```ldap://domain.local```)
 * ```ldap dn```: The path to the user which will query your ldap directory (e.g. ```CN=MyUser,CN=Users,DC=domain,DC=local```)
 * ```ldap password```: The password for that user
@@ -50,7 +52,7 @@ Params:
 * ```redis host```: url or domain of your redis host (e.g. ```localhost```)
 * ```redis port```: The port of your redis server
 * ```redis password```: If you use redis authentication.
-* ```rule_sources```: Array of sources. Currently only 'config' and 'redis' is available. 
+* ```rule_sources```: Array of sources. Currently only 'config' and 'redis' is available. The rules are positioned depending on the source position in the array
 * ```rules```: Array of rule definitions. (only via config file)
 
 
@@ -101,7 +103,7 @@ You could configure your rules with any of the following criteria:
 
 * ```categories```: Array of category names. A category is a list of domains stored in redis. (See shallalist import)
 * ```domain_files```: Same as categories, but expects file paths with of domain files. These files will be stored in redis and watched for changes
-* ```filetypes```: Array of filetypes (e.g. ```['swf', 'flv']```)
+* ```file_types```: Array of filet ypes (e.g. ```['swf', 'flv']```)
 * ```ips```: Array of ips (e.g. ```['10.20.30.0/24', '10.55.11.33']```) 
 * ```matches```: Array of wildcard matches (e.g. ```['*goog*']```)
 * ```groups```: Array of LDAP groups. The full LDAP path is expected (e.g. ```['CN=MyGroup,CN=Users,DC=domain,DC=local']```) 
@@ -146,3 +148,7 @@ Example rule which will deny every second request
 
 ## Shallalist import
 Use the ```import``` script to import shallalist into redis
+
+
+## Live Debugging
+Use the ```debugger``` script for life debugging
