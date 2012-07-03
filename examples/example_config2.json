@@ -17,10 +17,10 @@
   "rules":[{
     "name": "whitelist",
     "allowed": true,
-    "domain_files": ["/srv/sentry/test/domain_files/white"]
+    "domain_files": ["test/domain_files/white"]
   },{
     "name": "blacklist",
-    "domain_files": ["/srv/sentry/test/domain_files/black"],
+    "domain_files": ["test/domain_files/black"],
     "mode": "rewrite"
   },{
     "name": "default block",
