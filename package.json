@@ -1,5 +1,6 @@
 {
     "name": "squid3_sentry",
+    "version": "1.0.4",
     "description": "squid3 redirect_program",
     "url": "http://s-team.at",
     "keywords": ["squid", "proxy", "filter", "url", "redirect_programm"],
@@ -31,7 +32,6 @@
         "test": "./test",
         "bin": "./bin"
     },
-    "version": "1.0.3",
     "scripts": {
         "test": "vows test/*-test.js --spec"
     },
