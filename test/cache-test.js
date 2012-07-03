@@ -1,10 +1,11 @@
 var vows = require('vows');
 var assert = require('assert');
 
-var Cache = require('../lib/cache');
+var Core = require('../lib/core');
 var Rule = require('../lib/rule');
 
-var cache = new Cache({
+var core = new Core({
+  log: false,
   redirect: 'chache-test.default.com',
   ldap:{
     url: 'ldap://10.20.30.66:389',
@@ -17,11 +18,8 @@ var cache = new Cache({
   }
 });
 
-cache.addRuleDefinition(require('../lib/rules/category'));
-cache.addRuleDefinition(require('../lib/rules/group'));
 
-
-vows._cache = cache;
+vows._core = core;
 
 var _w = vows._w = function(callback) {
   //Return false as the first argument... this will be the error parameter in vows...hmh!
@@ -34,7 +32,7 @@ var _w = vows._w = function(callback) {
 vows.describe('Cache').addBatch({
   'user':{
     topic: function(){
-      cache.getUser('phil', _w(this.callback));
+      core.getUser('phil', _w(this.callback));
     },
     'loaded from LDAP': function(t){
       assert.isObject(t);
@@ -46,7 +44,7 @@ vows.describe('Cache').addBatch({
     },
     'cached':{
       topic: function(){
-        cache.getUser('phil', _w(this.callback));
+        core.getUser('phil', _w(this.callback));
       },
       'got from cache': function(t){
         assert.isObject(t);
@@ -56,28 +54,28 @@ vows.describe('Cache').addBatch({
         assert.isArray(t.memberOf);
         assert.notEqual(t.memberOf.indexOf('CN=Keinporn,CN=Users,DC=dabeach,DC=lan'), -1);
       },
-      'cache corrent': function(t){
-        assert.deepEqual(t, cache.users['phil']);
+      'cache correct': function(t){
+        assert.deepEqual(t, core.users['phil']);
       }
     }
   },
   
   'category':{
     topic: function(){
-      cache.domainInCategories('sex.com', ['porn', 'webmail'], _w(this.callback));
+      core.domainInCategories('sex.com', ['porn', 'webmail'], _w(this.callback));
     },
     'loaded from Redis':function(t){
       assert.isTrue(t);
     },
     'cached':{
       topic: function(){
-        cache.domainInCategories('sex.com', ['porn', 'webmail'], _w(this.callback));
+        core.domainInCategories('sex.com', ['porn', 'webmail'], _w(this.callback));
       },
       'got from cache':function(t){
         assert.isTrue(t);
       },
       'cache correct':function(t){
-        assert.isTrue(cache.categories['sex.com']['porn_webmail']);
+        assert.isTrue(core.categories['sex.com']['porn_webmail']);
       }
     }  
   }
