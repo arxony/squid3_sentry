@@ -48,8 +48,13 @@ if(program.args[0]){
   if(path[0] != '/'){
     path = process.cwd() + '/' + path;
   }
-  config = require(path);
   
+  try{
+    config = require(path);
+  }catch(e){
+    console.log('config file not valid json!');
+    process.exit(0);
+  }
 }else{
   
   //build the config object
