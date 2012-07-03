@@ -36,11 +36,11 @@ var rules = [{
 {
   name: 'allow flash on miniclip.com',
   allowed: true,
-  filetypes: ['swf'],
+  file_types: ['swf'],
   matches: ['*miniclip.com']
 },{
   name: 'deny flash for everything else',
-  filetypes: ['swf']
+  file_types: ['swf']
 }*/
 ];
 
