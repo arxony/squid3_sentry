@@ -1,0 +1,136 @@
+#!/usr/bin/env node
+
+var program = require('commander');
+var spawn   = require('child_process').spawn;
+var Redis   = require('../lib/sources/redis');
+
+program
+  .version('1.0.0')  
+  .usage('[options] [config.json]')
+  .option('-n, --name [name]', 'The name of the node (if you have multiple instances)', 'sentry')
+  .option('--redis-host <host>', 'The host or IP of the Redis server')
+  .option('--redis-port <port>', 'The port of the Redis server')
+  .option('--redis-password <password>', 'Authentication secret for Redis')
+  .parse(process.argv);
+
+var redis, config;
+
+//if there are redis config options
+if(program.redisHost){
+  redis = {
+    host: program.redisHost,
+    port: program.redisPort
+  };
+}
+
+
+
+if(program.args[0]){
+  //if there is a config file given, ignore all the other params and load the config file!
+  var path = program.args[0];
+  if(path[0] != '/'){
+    path = process.cwd() + '/' + path;
+  }
+  
+  try{
+    config = require(path);
+  }catch(e){
+    console.log('config file not valid json!');
+    process.exit(0);
+  }
+}else{
+  
+  //build the config object
+  config = {
+    name: program.name,
+    redis: redis
+  };
+}
+
+
+if(!config.redis){
+  console.log('Redis not configured!');
+  process.exit(0);
+}
+
+if(typeof config.log != 'string'){
+  console.log('No log file defined!');
+  process.exit(0);
+}
+
+
+redis = new Redis(config.redis);
+
+//tell the target to start debugging mode
+redis.client.publish(config.name, 'start debugger');
+
+tail = spawn('tail', ['-f', '-n', 0, config.log]);
+tail.stdout.on('data', function(data){
+  var chunks = data.toString().split('\n');
+  chunks.pop();
+  try{
+    var objs = JSON.parse('[' + chunks.join(',') + ']');
+    
+    for(var i in objs){
+      var obj = objs[i];
+      logObject(obj);
+    }
+  }catch(e){
+    console.log('[' + chunks.join(',') + ']');
+    console.log(e);
+  }
+});
+
+
+process.on('SIGINT', function () {
+  //tell the target to stop debugging mode
+  redis.client.publish(config.name, 'stop debugger');
+  redis.close();
+  process.exit(0);
+});
+  
+
+var level = {
+  10: 'TRACE',
+  20: 'DEBUG',
+  30: 'INFO',
+  40: 'WARN',
+  50: 'ERROR',
+  60: 'FATAL'
+};
+
+function logObject(obj){
+  var tmp = [obj.time];
+  
+  tmp.push('[' + level[obj.level] + ']');
+  
+  //normal msg
+  if(obj.msg){
+    tmp.push(obj.msg);
+  }
+  
+  //rule
+  if(obj.rule && obj.options){
+    tmp.push(obj.allowed ? 'allow' : 'redirect');
+    tmp.push(obj.options.domain);
+    
+    if(obj.redirect){
+      tmp.push('to');
+      tmp.push(obj.redirect);
+    }
+  }
+  
+  if(obj.error){
+    tmp.push(obj.error);
+    if(obj.input){
+      tmp.push('"' + obj.input + '"');
+    }else{
+      tmp.push('in');
+      tmp.push(obj.source);
+    }    
+  }
+  
+  console.log(tmp.join(' '));
+}
+
+
