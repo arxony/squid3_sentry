@@ -2,9 +2,7 @@ var vows    = require('vows');
 var assert  = require('assert');
 var Core    = require('../lib/core');
 
-var core = new Core({
-  redirect: 'default_redirect.com'
-});
+var core = vows._core;
 
 core.addRule({
   name: 'default_rule',

@@ -1,32 +1,11 @@
 var vows = require('vows');
 var assert = require('assert');
 
-var Cache = require('../lib/cache');
 var Rule = require('../lib/rule');
 
-var cache = vows._cache; /*new Cache({
-  redirect: 'default.com'
-});*/
+var core = vows._core; 
 
-cache.redirect = 'default.com';
-
-
-cache.addRuleDefinition(require('../lib/rules/match'));
-cache.addRuleDefinition(require('../lib/rules/filetype'));
-cache.addRuleDefinition(require('../lib/rules/ip'));
-//cache.addRuleDefinition(require('../lib/rules/category'));
-cache.addRuleDefinition(require('../lib/rules/time'));
-//cache.addRuleDefinition(require('../lib/rules/group'));
-cache.addRuleDefinition(require('../lib/rules/user'));
-cache.addRuleDefinition(require('../lib/rules/ou'));
-/*
-cache.setLdapConf({
-  url: 'ldap://10.20.30.66:389',
-  dn: 'CN=ldap_auth,CN=Users,DC=dabeach,DC=lan',
-  password: 'ooDahs0i',
-  base: 'DC=dabeach,DC=lan'
-});
-*/
+core.redirect = 'default.com';
 
 var _w = vows._w;
 
@@ -36,11 +15,27 @@ var now_min = now.getMinutes();
 var now_hour = now.getHours();
 
 
-function test(domain, rule_options, callback){
-  var r = new Rule(rule_options, cache);
-  r.isAllowed({domain:domain}, _w(callback));
+function getTime(plus){
+  var min = now_min + plus;
+  var hour = now_hour;
+  
+  if(min < 0){
+    hour--;
+    min = 60 + now_min + plus;
+  }
+  
+  if(min > 59){
+    hour++;
+    min = 60 - min;
+  }
+  
+  return hour + ':' + min;
 }
 
+function test(domain, rule_options, callback){
+  var r = new Rule(rule_options, core);
+  r.isAllowed({domain:domain}, _w(callback));
+}
 
 
 vows.describe('Rules').addBatch({
@@ -88,7 +83,7 @@ vows.describe('Rules').addBatch({
     topic: new Rule({
       allowed:false,
       matches:['*ogle*']
-    }, cache),
+    }, core),
     'matches': {
       topic: function(rule){
         rule.isAllowed({domain:'google.com'}, _w(this.callback));
@@ -111,7 +106,7 @@ vows.describe('Rules').addBatch({
     topic: new Rule({
       allowed:false,
       matches:['*ogle*', '*hub.com']
-    }, cache),
+    }, core),
     'matches': {
       topic: function(rule){
         rule.isAllowed({domain:'github.com'}, _w(this.callback));
@@ -135,7 +130,7 @@ vows.describe('Rules').addBatch({
     topic: new Rule({
       allowed:false,
       categories:['porn']
-    }, cache),
+    }, core),
     'matches': {
       topic: function(rule){
         rule.isAllowed({domain:'www.sex.com'}, _w(this.callback));
@@ -159,7 +154,7 @@ vows.describe('Rules').addBatch({
     topic: new Rule({
       allowed:false,
       categories:['porn', 'webmail']
-    }, cache),
+    }, core),
     'matches': {
       topic: function(rule){
         rule.isAllowed({domain:'hotmail.com'}, _w(this.callback));
@@ -182,8 +177,8 @@ vows.describe('Rules').addBatch({
   'rule with filetype "swf" and "flv"':{
     topic: new Rule({
       allowed:false,
-      filetypes:['swf', 'flv']
-    }, cache),
+      file_types:['swf', 'flv']
+    }, core),
     'matches': {
       topic: function(rule){
         rule.isAllowed({domain:'hotmail.com', url:'http://hotmail.com/foo/player.swf'}, _w(this.callback));
@@ -208,7 +203,7 @@ vows.describe('Rules').addBatch({
     topic: new Rule({
       allowed:false,
       ips:['10.69.1.0/255.255.255.0', '10.168.1.0/24']
-    }, cache),
+    }, core),
     'matches': {
       topic: function(rule){
         rule.isAllowed({domain:'google.com', ip: '10.168.1.55'}, _w(this.callback));
@@ -232,7 +227,7 @@ vows.describe('Rules').addBatch({
     topic: new Rule({
       allowed:false,
       groups:['CN=Keinporn,CN=Users,DC=dabeach,DC=lan']
-    }, cache),
+    }, core),
     'matches': {
       topic: function(rule){
         rule.isAllowed({domain:'google.com', username:'phil'}, _w(this.callback));
@@ -255,7 +250,7 @@ vows.describe('Rules').addBatch({
     topic: new Rule({
       allowed:false,
       groups:['CN=Keinporn,CN=Users,DC=dabeach,DC=lan', 'CN=Test,CN=Users,DC=dabeach,DC=lan']
-    }, cache),
+    }, core),
     'matches': {
       topic: function(rule){
         rule.isAllowed({domain:'google.com', username:'felix'}, _w(this.callback));
@@ -280,7 +275,7 @@ vows.describe('Rules').addBatch({
     topic: new Rule({
       allowed:false,
       users:['phil']
-    }, cache),
+    }, core),
     'matches': {
       topic: function(rule){
         rule.isAllowed({domain:'google.com', username:'phil'}, _w(this.callback));
@@ -303,7 +298,7 @@ vows.describe('Rules').addBatch({
     topic: new Rule({
       allowed:false,
       users:['phil', 'felix']
-    }, cache),
+    }, core),
     'matches': {
       topic: function(rule){
         rule.isAllowed({domain:'google.com', username:'felix'}, _w(this.callback));
@@ -328,7 +323,7 @@ vows.describe('Rules').addBatch({
     topic: new Rule({
       allowed:false,
       ous:['OU=LBS,OU=Schulen,DC=dabeach,DC=lan']
-    }, cache),
+    }, core),
     'matches': {
       topic: function(rule){
         rule.isAllowed({domain:'google.com', username:'phil'}, _w(this.callback));
@@ -353,7 +348,7 @@ vows.describe('Rules').addBatch({
     topic: new Rule({
       allowed:false,
       ous:['OU=LBS,OU=Schulen,DC=dabeach,DC=lan', 'OU=LFS,OU=Schulen,DC=dabeach,DC=lan']
-    }, cache),
+    }, core),
     'matches': {
       topic: function(rule){
         rule.isAllowed({domain:'google.com', username:'felix'}, _w(this.callback));
@@ -376,8 +371,8 @@ vows.describe('Rules').addBatch({
   'rule with time "now - now+2min"':{
     topic: new Rule({
       allowed:false,
-      times:[{from:now_hour + ':' + now_min, to:now_hour + ':' + (now_min + 2)}]
-    }, cache),
+      times:[{from:getTime(), to:getTime(2)}]
+    }, core),
     'matches': {
       topic: function(rule){
         rule.isAllowed({domain:'google.com'}, _w(this.callback));
@@ -391,8 +386,8 @@ vows.describe('Rules').addBatch({
   'rule with time "now+2min - now+4min"':{
     topic: new Rule({
       allowed:false,
-      times:[{from:now_hour + ':' + (now_min + 2), to:now_hour + ':' + (now_min + 4)}]
-    }, cache),
+      times:[{from:getTime(2), to:getTime(4)}]
+    }, core),
     'matches': {
       topic: function(rule){
         rule.isAllowed({domain:'google.com'}, _w(this.callback));
@@ -406,8 +401,8 @@ vows.describe('Rules').addBatch({
   'rule with times "now - now+2min" and "now-5min - now-2min"':{
     topic: new Rule({
       allowed:false,
-      times:[{from:now_hour + ':' + (now_min-5), to:now_hour + ':' + (now_min - 2)}, {from:now_hour + ':' + now_min, to:now_hour + ':' + (now_min + 2)}]
-    }, cache),
+      times:[{from:getTime(-5), to:getTime(-2)}, {from:getTime(), to:getTime(2)}]
+    }, core),
     'matches': {
       topic: function(rule){
         rule.isAllowed({domain:'google.com'}, _w(this.callback));
@@ -425,7 +420,7 @@ vows.describe('Rules').addBatch({
       allowed:false,
       categories:['porn', 'webmail'],
       groups:['CN=Keinporn,CN=Users,DC=dabeach,DC=lan', 'CN=Test,CN=Users,DC=dabeach,DC=lan']
-    }, cache),
+    }, core),
     'matches': {
       topic: function(rule){
         rule.isAllowed({domain:'hotmail.com', username:'felix'}, _w(this.callback));
@@ -450,8 +445,8 @@ vows.describe('Rules').addBatch({
     topic: new Rule({
       allowed:false,
       categories:['porn', 'webmail'],
-      times:[{from:now_hour + ':' + (now_min-5), to:now_hour + ':' + (now_min - 2)}, {from:now_hour + ':' + now_min, to:now_hour + ':' + (now_min + 2)}]
-    }, cache),
+      times:[{from:getTime(-5), to:getTime(-2)}, {from:getTime(), to:getTime(2)}]
+    }, core),
     'matches': {
       topic: function(rule){
         rule.isAllowed({domain:'hotmail.com', username:'felix'}, _w(this.callback));
@@ -466,8 +461,8 @@ vows.describe('Rules').addBatch({
     topic: new Rule({
       allowed:false,
       categories:['porn', 'webmail'],
-      times:[{from:now_hour + ':' + (now_min-5), to:now_hour + ':' + (now_min - 2)}, {from:now_hour + ':' + (now_min+1), to:now_hour + ':' + (now_min + 3)}]
-    }, cache),
+      times:[{from:getTime(-5), to:getTime(-2)}, {from:getTime(1), to:getTime(3)}]
+    }, core),
     'matches': {
       topic: function(rule){
         rule.isAllowed({domain:'hotmail.com', username:'felix'}, _w(this.callback));
@@ -485,9 +480,9 @@ vows.describe('Rules').addBatch({
     topic: new Rule({
       allowed:false,
       categories:['porn', 'webmail'],
-      times:[{from:now_hour + ':' + (now_min-5), to:now_hour + ':' + (now_min - 2)}, {from:now_hour + ':' + now_min, to:now_hour + ':' + (now_min + 2)}],
+      times:[{from:getTime(-5), to:getTime(-2)}, {from:getTime(), to:getTime(2)}],
       groups:['CN=Keinporn,CN=Users,DC=dabeach,DC=lan', 'CN=Test,CN=Users,DC=dabeach,DC=lan']
-    }, cache),
+    }, core),
     'matches': {
       topic: function(rule){
         rule.isAllowed({domain:'hotmail.com', username:'felix'}, _w(this.callback));
@@ -507,7 +502,7 @@ vows.describe('Rules').addBatch({
       allowed:false,
       categories:['porn', 'webmail'],
       matches:['sex', 'mail']
-    }, cache),
+    }, core),
     'matches': {
       topic: function(rule){
         rule.isAllowed({domain:'hotmail.com', username:'felix'}, _w(this.callback));
@@ -534,7 +529,7 @@ vows.describe('Rules').addBatch({
       matches:['sex', 'mail'],
       groups:['CN=Keinporn,CN=Users,DC=dabeach,DC=lan', 'CN=Test,CN=Users,DC=dabeach,DC=lan'],
       users:['felix']
-    }, cache),
+    }, core),
     'matches': {
       topic: function(rule){
         rule.isAllowed({domain:'sex.com', username:'felix'}, _w(this.callback));
