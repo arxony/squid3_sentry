@@ -1,0 +1,31 @@
+{
+  "name": "test",
+  "redirect": "http://310015h0.noeb.local/proxy/access_denied.php?caddr=[ip]&url=[url]",
+  "rule_sources": ["config", "redis"],
+  "log": "squid_noeb.log",
+  "_explain": true,
+  "cache_time": 300000,
+  "ldap":{
+    "url": "ldap://10.20.30.66:389",
+    "dn": "CN=ldap_auth,CN=Users,DC=dabeach,DC=lan",
+    "password": "ooDahs0i",
+    "base": "DC=dabeach,DC=lan"
+  },
+  "redis":{
+    "host":"10.20.30.102"
+  },
+  "rules":[{
+    "name": "whitelist",
+    "allowed": true,
+    "domain_files": ["/srv/sentry/test/domain_files/white"]
+  },{
+    "name": "blacklist",
+    "domain_files": ["/srv/sentry/test/domain_files/black"],
+    "mode": "rewrite"
+  },{
+    "name": "default block",
+    "categories": ["aggressive","costtraps","dating","dynamic","fortunetelling","gamble","hacking","porn","redirector","remotecontrol","ringtones","spyware","tracker","violence","warez","webphone"],
+    "mode": "rewrite",
+    "groups": ["CN=Keinporn,CN=Users,DC=dabeach,DC=lan"]
+  }]
+}
