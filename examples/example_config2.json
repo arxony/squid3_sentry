@@ -1,5 +1,5 @@
 {
-  "name": "test",
+  "name": "test2",
   "redirect": "http://310015h0.noeb.local/proxy/access_denied.php?caddr=[ip]&url=[url]",
   "rule_sources": ["config", "redis"],
   "log": "squid_noeb.log",
