@@ -28,8 +28,9 @@ var redis   = new Redis({
   prefix: program.prefix
 });
 
-var start   = new Date().getTime();
-var path, bar;
+var start = new Date().getTime();
+var path  = '';
+var bar;
 
 
 program.path = program.args[0];

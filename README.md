@@ -149,6 +149,10 @@ Example rule which will deny every second request
 ## Shallalist import
 Use the ```import``` script to import shallalist into redis
 
+    $ import path/to/shallalist
+
 
 ## Live Debugging
 Use the ```debugger``` script for life debugging
+
+    $ debugger config.json

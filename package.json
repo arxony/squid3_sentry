@@ -1,6 +1,6 @@
 {
     "name": "squid3_sentry",
-    "version": "1.0.5",
+    "version": "1.0.6",
     "description": "squid3 redirect_program",
     "url": "http://s-team.at",
     "keywords": ["squid", "proxy", "filter", "url", "redirect_programm"],
@@ -18,7 +18,8 @@
         "commander": ">=0.6.0",
         "netmask": ">=0.0.2",
         "ldapjs": ">=0.5.0",
-        "bunyan": ">=0.10.0"
+        "bunyan": ">=0.10.0",
+        "flow": ">=0.2.2"
     },
     "devDependencies": {
         "vows": ">= 0.6.x"
