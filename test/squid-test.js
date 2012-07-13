@@ -8,6 +8,7 @@ Squid.core = core;
 
 var _w = vows._w;
 
+
 vows.describe('Squid').addBatch({
   'Squid parser in re-write mode':{    
     topic: function(){
@@ -61,6 +62,20 @@ vows.describe('Squid').addBatch({
       'is allowed for user "phil"':function(t){
         assert.equal(t, '1');
       }
+    }
+  },
+  
+  'Squid with category':{    
+    topic: function(){
+      core.addRule({
+        name: 'deny all',
+        redirect: 'denyporn.com',
+        categories: ['porn']
+      }, 0);
+      Squid.parse('0 http://www.sex.com/ 10.20.30.40/- phil GET ', _w(this.callback));
+    },
+    'default denied':function(t){
+      assert.equal(t, '0 302:http://denyporn.com');
     }
   }
 }).exportTo(module);
