@@ -32,7 +32,7 @@ vows.describe('Squid').addBatch({
         Squid.parse('1 http://www.google.com/ 10.20.30.40/- phil GET ', _w(this.callback));
       },
       'is allowed for user "phil"':function(t){
-        assert.equal('1', t);
+        assert.equal(t, '1');
       }
     }
   },
@@ -59,7 +59,7 @@ vows.describe('Squid').addBatch({
         Squid.parse('1 http://www.google.com/ 10.20.30.40/- phil GET ', _w(this.callback));
       },
       'is allowed for user "phil"':function(t){
-        assert.equal('1', t);
+        assert.equal(t, '1');
       }
     }
   }

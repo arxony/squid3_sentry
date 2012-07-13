@@ -62,21 +62,53 @@ vows.describe('Cache').addBatch({
   
   'category':{
     topic: function(){
-      core.domainInCategories('sex.com', ['porn', 'webmail'], _w(this.callback));
+      core.inCategories('http://sex.com/blaa', 'sex.com', ['porn', 'webmail'], _w(this.callback));
     },
     'loaded from Redis':function(t){
       assert.isTrue(t);
     },
     'cached':{
       topic: function(){
-        core.domainInCategories('sex.com', ['porn', 'webmail'], _w(this.callback));
+        core.inCategories('http://sex.com/blaa', 'sex.com', ['porn', 'webmail'], _w(this.callback));
       },
       'got from cache':function(t){
         assert.isTrue(t);
       },
       'cache correct':function(t){
-        assert.isTrue(core.categories['sex.com']['porn_webmail']);
+        assert.isTrue(core.categories['sex.com/blaa']['porn_webmail']);
+      },
+      '- purge':{
+        topic: function(){
+          core.purge();
+          return true;
+        },
+
+        'cache empty':function(){
+          assert.deepEqual(core.categories, {});
+        },
+        
+        '- load other':{
+          topic: function(){
+            core.inCategories('http://sex.com/other', 'sex.com', ['porn', 'webmail'], _w(this.callback));
+          },
+          
+          '- load again and purge':{
+            topic: function(){
+              core.inCategories('http://sex.com/blaa', 'sex.com', ['porn', 'webmail'], _w(this.callback));
+              core.purge();
+            },
+
+            'got result':function(t){
+              assert.isTrue(t);
+            },
+
+            'cache has new results':function(){
+              assert.deepEqual(core.categories, {'sex.com/blaa': { 'porn_webmail': true }});
+            }
+          }
+          
+        }
       }
-    }  
+    }
   }
 }).exportTo(module);

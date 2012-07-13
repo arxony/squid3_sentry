@@ -1,5 +1,6 @@
 var vows = require('vows');
 var assert = require('assert');
+var url  = require('url');
 
 var Rule = require('../lib/rule');
 
@@ -34,7 +35,12 @@ function getTime(plus){
 
 function test(domain, rule_options, callback){
   var r = new Rule(rule_options, core);
-  r.isAllowed({domain:domain}, _w(callback));
+  r.isAllowed(addOptions({domain:domain, url:'http://' + domain + '/'}), _w(callback));
+}
+
+function addOptions(options){
+  options.domain = url.parse(options.url).hostname;
+  return options;
 }
 
 
@@ -86,7 +92,7 @@ vows.describe('Rules').addBatch({
     }, core),
     'matches': {
       topic: function(rule){
-        rule.isAllowed({domain:'google.com'}, _w(this.callback));
+        rule.isAllowed(addOptions({url:'http://google.com'}), _w(this.callback));
       },
       'google.com': function(t){
         assert.equal(t, 'default.com');
@@ -94,7 +100,7 @@ vows.describe('Rules').addBatch({
     },
     'doesn\'t match':{
       topic: function(rule){
-        rule.isAllowed({domain:'other.com'}, _w(this.callback));
+        rule.isAllowed(addOptions({url:'http://other.com'}), _w(this.callback));
       },
       'other.com': function(t){
         assert.isNull(t);
@@ -109,7 +115,7 @@ vows.describe('Rules').addBatch({
     }, core),
     'matches': {
       topic: function(rule){
-        rule.isAllowed({domain:'github.com'}, _w(this.callback));
+        rule.isAllowed(addOptions({url:'http://github.com'}), _w(this.callback));
       },
       'github.com': function(t){
         assert.equal(t, 'default.com');
@@ -117,7 +123,7 @@ vows.describe('Rules').addBatch({
     },
     'doesn\'t match':{
       topic: function(rule){
-        rule.isAllowed({domain:'other.com'}, _w(this.callback));
+        rule.isAllowed(addOptions({url:'http://other.com'}), _w(this.callback));
       },
       'other.com': function(t){
         assert.isNull(t);
@@ -133,15 +139,15 @@ vows.describe('Rules').addBatch({
     }, core),
     'matches': {
       topic: function(rule){
-        rule.isAllowed({domain:'www.sex.com'}, _w(this.callback));
+        rule.isAllowed(addOptions({url:'http://www.sex.com'}), _w(this.callback));
       },
-      'sex.com': function(t){
+      'www.sex.com (with subdomain)': function(t){
         assert.equal(t, 'default.com');
       }
     },
     'doesn\'t match':{
       topic: function(rule){
-        rule.isAllowed({domain:'google.com'}, _w(this.callback));
+        rule.isAllowed(addOptions({url:'http://google.com'}), _w(this.callback));
       },
       'google.com': function(t){
         assert.isNull(t);
@@ -157,7 +163,7 @@ vows.describe('Rules').addBatch({
     }, core),
     'matches': {
       topic: function(rule){
-        rule.isAllowed({domain:'hotmail.com'}, _w(this.callback));
+        rule.isAllowed(addOptions({url:'http://hotmail.com'}), _w(this.callback));
       },
       'hotmail.com': function(t){
         assert.equal(t, 'default.com');
@@ -165,7 +171,7 @@ vows.describe('Rules').addBatch({
     },
     'doesn\'t match':{
       topic: function(rule){
-        rule.isAllowed({domain:'google.com'}, _w(this.callback));
+        rule.isAllowed(addOptions({url:'http://google.com'}), _w(this.callback));
       },
       'google.com': function(t){
         assert.isNull(t);
@@ -181,7 +187,7 @@ vows.describe('Rules').addBatch({
     }, core),
     'matches': {
       topic: function(rule){
-        rule.isAllowed({domain:'hotmail.com', url:'http://hotmail.com/foo/player.swf'}, _w(this.callback));
+        rule.isAllowed(addOptions({url:'http://hotmail.com/foo/player.swf'}), _w(this.callback));
       },
       'player.swf': function(t){
         assert.equal(t, 'default.com');
@@ -189,7 +195,7 @@ vows.describe('Rules').addBatch({
     },
     'doesn\'t match':{
       topic: function(rule){
-        rule.isAllowed({domain:'google.com', url:'https://www.google.at/search?q=flv'}, _w(this.callback));
+        rule.isAllowed(addOptions({url:'https://www.google.at/search?q=flv'}), _w(this.callback));
       },
       'google search': function(t){
         assert.isNull(t);
@@ -206,7 +212,7 @@ vows.describe('Rules').addBatch({
     }, core),
     'matches': {
       topic: function(rule){
-        rule.isAllowed({domain:'google.com', ip: '10.168.1.55'}, _w(this.callback));
+        rule.isAllowed(addOptions({url:'http://google.com', ip: '10.168.1.55'}), _w(this.callback));
       },
       '10.168.1.55': function(t){
         assert.equal(t, 'default.com');
@@ -214,7 +220,7 @@ vows.describe('Rules').addBatch({
     },
     'doesn\'t match':{
       topic: function(rule){
-        rule.isAllowed({domain:'google.com', ip:'10.69.2.13'}, _w(this.callback));
+        rule.isAllowed(addOptions({url:'http://google.com', ip:'10.69.2.13'}), _w(this.callback));
       },
       '10.69.2.13': function(t){
         assert.isNull(t);
@@ -230,7 +236,7 @@ vows.describe('Rules').addBatch({
     }, core),
     'matches': {
       topic: function(rule){
-        rule.isAllowed({domain:'google.com', username:'phil'}, _w(this.callback));
+        rule.isAllowed(addOptions({url:'http://google.com', username:'phil'}), _w(this.callback));
       },
       'user in group': function(t){
         assert.equal(t, 'default.com');
@@ -238,7 +244,7 @@ vows.describe('Rules').addBatch({
     },
     'doesn\'t match':{
       topic: function(rule){
-        rule.isAllowed({domain:'google.com', username:'other'}, _w(this.callback));
+        rule.isAllowed(addOptions({url:'http://google.com', username:'other'}), _w(this.callback));
       },
       'user not in group': function(t){
         assert.isNull(t);
@@ -253,7 +259,7 @@ vows.describe('Rules').addBatch({
     }, core),
     'matches': {
       topic: function(rule){
-        rule.isAllowed({domain:'google.com', username:'felix'}, _w(this.callback));
+        rule.isAllowed(addOptions({url:'http://google.com', username:'felix'}), _w(this.callback));
       },
       'user in group': function(t){
         assert.equal(t, 'default.com');
@@ -261,7 +267,7 @@ vows.describe('Rules').addBatch({
     },
     'doesn\'t match':{
       topic: function(rule){
-        rule.isAllowed({domain:'google.com', username:'other'}, _w(this.callback));
+        rule.isAllowed(addOptions({url:'http://google.com', username:'other'}), _w(this.callback));
       },
       'user not in group': function(t){
         assert.isNull(t);
@@ -278,7 +284,7 @@ vows.describe('Rules').addBatch({
     }, core),
     'matches': {
       topic: function(rule){
-        rule.isAllowed({domain:'google.com', username:'phil'}, _w(this.callback));
+        rule.isAllowed(addOptions({url:'http://google.com', username:'phil'}), _w(this.callback));
       },
       'user': function(t){
         assert.equal(t, 'default.com');
@@ -286,7 +292,7 @@ vows.describe('Rules').addBatch({
     },
     'doesn\'t match':{
       topic: function(rule){
-        rule.isAllowed({domain:'google.com', username:'other'}, _w(this.callback));
+        rule.isAllowed(addOptions({url:'http://google.com', username:'other'}), _w(this.callback));
       },
       'other user': function(t){
         assert.isNull(t);
@@ -301,7 +307,7 @@ vows.describe('Rules').addBatch({
     }, core),
     'matches': {
       topic: function(rule){
-        rule.isAllowed({domain:'google.com', username:'felix'}, _w(this.callback));
+        rule.isAllowed(addOptions({url:'http://google.com', username:'felix'}), _w(this.callback));
       },
       'user': function(t){
         assert.equal(t, 'default.com');
@@ -309,7 +315,7 @@ vows.describe('Rules').addBatch({
     },
     'doesn\'t match':{
       topic: function(rule){
-        rule.isAllowed({domain:'google.com', username:'other'}, _w(this.callback));
+        rule.isAllowed(addOptions({url:'http://google.com', username:'other'}), _w(this.callback));
       },
       'other user': function(t){
         assert.isNull(t);
@@ -326,7 +332,7 @@ vows.describe('Rules').addBatch({
     }, core),
     'matches': {
       topic: function(rule){
-        rule.isAllowed({domain:'google.com', username:'phil'}, _w(this.callback));
+        rule.isAllowed(addOptions({url:'http://google.com', username:'phil'}), _w(this.callback));
       },
       'user in ou': function(t){
         assert.equal(t, 'default.com');
@@ -334,7 +340,7 @@ vows.describe('Rules').addBatch({
     },
     'doesn\'t match':{
       topic: function(rule){
-        rule.isAllowed({domain:'google.com', username:'other'}, _w(this.callback));
+        rule.isAllowed(addOptions({url:'http://google.com', username:'other'}), _w(this.callback));
       },
       'user not in ou': function(t){
         assert.isNull(t);
@@ -351,7 +357,7 @@ vows.describe('Rules').addBatch({
     }, core),
     'matches': {
       topic: function(rule){
-        rule.isAllowed({domain:'google.com', username:'felix'}, _w(this.callback));
+        rule.isAllowed(addOptions({url:'http://google.com', username:'felix'}), _w(this.callback));
       },
       'user in ou': function(t){
         assert.equal(t, 'default.com');
@@ -359,7 +365,7 @@ vows.describe('Rules').addBatch({
     },
     'doesn\'t match':{
       topic: function(rule){
-        rule.isAllowed({domain:'google.com', username:'other'}, _w(this.callback));
+        rule.isAllowed(addOptions({url:'http://google.com', username:'other'}), _w(this.callback));
       },
       'user not in ou': function(t){
         assert.isNull(t);
@@ -375,7 +381,7 @@ vows.describe('Rules').addBatch({
     }, core),
     'matches': {
       topic: function(rule){
-        rule.isAllowed({domain:'google.com'}, _w(this.callback));
+        rule.isAllowed(addOptions({url:'http://google.com'}), _w(this.callback));
       },
       'in time': function(t){
         assert.equal(t, 'default.com');
@@ -390,7 +396,7 @@ vows.describe('Rules').addBatch({
     }, core),
     'matches': {
       topic: function(rule){
-        rule.isAllowed({domain:'google.com'}, _w(this.callback));
+        rule.isAllowed(addOptions({url:'http://google.com'}), _w(this.callback));
       },
       'not in time': function(t){
         assert.isNull(t);
@@ -405,7 +411,7 @@ vows.describe('Rules').addBatch({
     }, core),
     'matches': {
       topic: function(rule){
-        rule.isAllowed({domain:'google.com'}, _w(this.callback));
+        rule.isAllowed(addOptions({url:'http://google.com'}), _w(this.callback));
       },
       'in time': function(t){
         assert.equal(t, 'default.com');
@@ -423,7 +429,7 @@ vows.describe('Rules').addBatch({
     }, core),
     'matches': {
       topic: function(rule){
-        rule.isAllowed({domain:'hotmail.com', username:'felix'}, _w(this.callback));
+        rule.isAllowed(addOptions({url:'http://hotmail.com', username:'felix'}), _w(this.callback));
       },
       'hotmail.com with user in group': function(t){
         assert.equal(t, 'default.com');
@@ -431,7 +437,7 @@ vows.describe('Rules').addBatch({
     },
     'doesn\'t match':{
       topic: function(rule){
-        rule.isAllowed({domain:'hotmail.com', username: 'other'}, _w(this.callback));
+        rule.isAllowed(addOptions({url:'http://hotmail.com', username: 'other'}), _w(this.callback));
       },
       'hotmail.com with other user': function(t){
         assert.isNull(t);
@@ -449,7 +455,7 @@ vows.describe('Rules').addBatch({
     }, core),
     'matches': {
       topic: function(rule){
-        rule.isAllowed({domain:'hotmail.com', username:'felix'}, _w(this.callback));
+        rule.isAllowed(addOptions({url:'http://hotmail.com', username:'felix'}), _w(this.callback));
       },
       'hotmail.com in time and category': function(t){
         assert.equal(t, 'default.com');
@@ -465,7 +471,7 @@ vows.describe('Rules').addBatch({
     }, core),
     'matches': {
       topic: function(rule){
-        rule.isAllowed({domain:'hotmail.com', username:'felix'}, _w(this.callback));
+        rule.isAllowed(addOptions({url:'http://hotmail.com', username:'felix'}), _w(this.callback));
       },
       'hotmail.com in category but not in time': function(t){
         assert.isNull(t);
@@ -485,7 +491,7 @@ vows.describe('Rules').addBatch({
     }, core),
     'matches': {
       topic: function(rule){
-        rule.isAllowed({domain:'hotmail.com', username:'felix'}, _w(this.callback));
+        rule.isAllowed(addOptions({url:'http://hotmail.com', username:'felix'}), _w(this.callback));
       },
       'hotmail.com with user in group': function(t){
         assert.equal(t, 'default.com');
@@ -505,7 +511,7 @@ vows.describe('Rules').addBatch({
     }, core),
     'matches': {
       topic: function(rule){
-        rule.isAllowed({domain:'hotmail.com', username:'felix'}, _w(this.callback));
+        rule.isAllowed(addOptions({url:'http://hotmail.com', username:'felix'}), _w(this.callback));
       },
       'hotmail.com with categories and matches': function(t){
         assert.equal(t, 'default.com');
@@ -513,7 +519,7 @@ vows.describe('Rules').addBatch({
     },
     'doesn\'t match': {
       topic: function(rule){
-        rule.isAllowed({domain:'porno.com', username:'felix'}, _w(this.callback));
+        rule.isAllowed(addOptions({url:'http://porno.com', username:'felix'}), _w(this.callback));
       },
       'hotmail.com with categories and matches': function(t){
         assert.isNull(t);
@@ -532,7 +538,7 @@ vows.describe('Rules').addBatch({
     }, core),
     'matches': {
       topic: function(rule){
-        rule.isAllowed({domain:'sex.com', username:'felix'}, _w(this.callback));
+        rule.isAllowed(addOptions({url:'http://sex.com', username:'felix'}), _w(this.callback));
       },
       'sex.com categories, matches, groups and user': function(t){
         assert.equal(t, 'default.com');
@@ -540,7 +546,7 @@ vows.describe('Rules').addBatch({
     },
     'doesn\'t match': {
       topic: function(rule){
-        rule.isAllowed({domain:'sex.com', username:'phil'}, _w(this.callback));
+        rule.isAllowed(addOptions({url:'http://sex.com', username:'phil'}), _w(this.callback));
       },
       'sex.com categories, matches, groups and user': function(t){
         assert.isNull(t);

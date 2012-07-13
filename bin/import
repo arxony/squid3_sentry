@@ -60,7 +60,7 @@ if(program.flush){
 
 
 //find all domains files
-glob('**/domains', {cwd: path}, function(err, files){
+glob('**/{domains,urls}', {cwd: path, nounique:true}, function(err, files){
   
   var done = 0;
   var total = files.length;
@@ -69,7 +69,7 @@ glob('**/domains', {cwd: path}, function(err, files){
   flow.serialForEach(files, function(file){
         
     //get name and path
-    var name = file.replace('/domains', '').replace('/', '_');
+    var name = file.replace(/\/(domains|urls)/, '').replace('/', '_');
     var full_path = path + '/' + file;
     
     //update processbar to show the current name

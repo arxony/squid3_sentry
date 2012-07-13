@@ -42,7 +42,7 @@ vows.describe('Core').addBatch({
     
     'Url placeholders':{
       topic: function(){
-        core.isAllowed({domain:'google.com', user: 'phil'}, _w(this.callback));
+        core.isAllowed({url:'http://google.com', user: 'phil'}, _w(this.callback));
       },
       
       'are replaced with values': function(t){

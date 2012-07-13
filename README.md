@@ -130,7 +130,7 @@ Example rule which will deny every second request
 
       config: function(options){
         //This rule definition is active (filter will be called!)
-        this.misc_types.push('my_rule_def');
+        this.types.push('my_rule_def');
         this.allow_next = true;
       },
 
