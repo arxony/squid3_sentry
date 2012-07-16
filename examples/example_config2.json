@@ -17,10 +17,10 @@
   "rules":[{
     "name": "whitelist",
     "allowed": true,
-    "domain_files": ["test/domain_files/white"]
+    "category_files": ["test/domain_files/white"]
   },{
     "name": "blacklist",
-    "domain_files": ["test/domain_files/black"],
+    "category_files": ["test/domain_files/black"],
     "mode": "rewrite"
   },{
     "name": "default block",

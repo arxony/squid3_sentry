@@ -101,8 +101,8 @@ You could use the following placeholders:
 ### Default criteria
 You could configure your rules with any of the following criteria:
 
-* ```categories```: Array of category names. A category is a list of domains stored in redis. (See shallalist import)
-* ```domain_files```: Same as categories, but expects file paths with of domain files. These files will be stored in redis and watched for changes
+* ```categories```: Array of category names. A category is a list of domains and/or urls stored in redis. (See shallalist import)
+* ```category_files```: Same as categories, but expects a file paths with domains and/or urls. These files will be stored in redis and watched for changes
 * ```file_types```: Array of filet ypes (e.g. ```['swf', 'flv']```)
 * ```ips```: Array of ips (e.g. ```['10.20.30.0/24', '10.55.11.33']```) 
 * ```matches```: Array of wildcard matches (e.g. ```['*goog*']```)

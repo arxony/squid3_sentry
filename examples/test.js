@@ -15,7 +15,7 @@ Squid.core = core;
 core.addRule({
   name: 'categories from file',
   allow: false,
-  domain_files: ['test/domain_files/black'], //, 'test/domain_files/white'],
+  category_files: ['test/domain_files/black'], //, 'test/domain_files/white'],
   redirect: 'no-flash.com'
 });
 
