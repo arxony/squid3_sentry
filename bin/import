@@ -10,6 +10,7 @@ var Redis   = require('../lib/sources/redis');
 program
   .version('1.0.1')  
   .usage('[options] <path>')
+  .option('-l, --location <url>', 'The shallalist url. Default is http://www.shallalist.de/Downloads/shallalist.tar.gz', 'http://www.shallalist.de/Downloads/shallalist.tar.gz')
   .option('-s, --server <server>', 'Redis server')
   .option('-p, --port <port>', 'Redis port', parseInt)
   .option('-d, --database <database>', 'Redis database. Default is 0', parseInt)
@@ -40,30 +41,48 @@ if(!program.path){
 }
 
 function download_archive(){
-  var url = 'http://www.shallalist.de/Downloads/shallalist.tar.gz';
+  var url = program.location;
   var tmp_file = '/var/tmp/shallalist.tar.gz';
   var tmp_folder = '/var/tmp/shallalist';
   var curl = spawn('curl', [url, '-o', tmp_file]);
   
   if(!program.quiet){
-    console.log("Downloading from shallalist.de");
+    console.log('Downloading from', url);
   }
     
   curl.on('exit', function (code) {
+    if(code != 0){
+      console.log('download error');
+      process.exit(1);
+    }
     var mkdir = spawn('mkdir', [tmp_folder]);
     
-    mkdir.on('exit', function(){
-       var tar = spawn('tar', ['-zxvf', tmp_file, '-C', tmp_folder]);
+    mkdir.on('exit', function(code){
+      if(code != 0){
+        console.log('create temp dir error');
+        process.exit(1);
+      }
+      
+      var tar = spawn('tar', ['-zxvf', tmp_file, '-C', tmp_folder]);
        
-       tar.on('exit', function(){
-         import_file(tmp_folder + '/BL', function(){
-           var rm = spawn('rm', ['-rf', tmp_file, tmp_folder]);
-           
-           rm.on('exit', function(){
-             process.exit(0);
-           });
+      tar.on('exit', function(code){
+       if(code != 0){
+         console.log('untar error');
+         process.exit(1);
+       }
+       
+       import_file(tmp_folder + '/BL', function(){
+         var rm = spawn('rm', ['-rf', tmp_file, tmp_folder]);
+ 
+         rm.on('exit', function(){
+           if(code != 0){
+             console.log('remove temp dir error');
+             process.exit(1);
+           }
+           process.exit(0);
          });
-       });      
+       });
+      });      
     });
   });
 }
