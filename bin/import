@@ -3,6 +3,7 @@
 var glob    = require('glob');
 var flow    = require('flow');
 var program = require('commander');
+var spawn   = require('child_process').spawn;
 
 var Redis   = require('../lib/sources/redis');
 
@@ -28,73 +29,112 @@ var redis   = new Redis({
   prefix: program.prefix
 });
 
-var start = new Date().getTime();
-var path  = '';
-var bar;
-
 
 program.path = program.args[0];
 
 //check if a path is given
 if(!program.path){
-  console.log('No path given');
-  process.exit(1);
+  download_archive();
+}else{
+  import_file(program.path);
 }
 
-//check if absolute or relative path
-if(program.path[0] != '/'){
-  path = process.cwd() + '/';
-}
-path += program.path;
-
-//if not quiet, initialize the progress bar
-if(!program.quiet){
-  bar = require('progress-bar').create(process.stdout);
-}
-
-
-if(program.flush){
-  redis.clearDomains();
-}
-
-
-
-//find all domains files
-glob('**/{domains,urls}', {cwd: path, nounique:true}, function(err, files){
+function download_archive(){
+  var url = 'http://www.shallalist.de/Downloads/shallalist.tar.gz';
+  var tmp_file = '/var/tmp/shallalist.tar.gz';
+  var tmp_folder = '/var/tmp/shallalist';
+  var curl = spawn('curl', [url, '-o', tmp_file]);
   
-  var done = 0;
-  var total = files.length;
+  if(!program.quiet){
+    console.log("Downloading from shallalist.de");
+  }
+    
+  curl.on('exit', function (code) {
+    var mkdir = spawn('mkdir', [tmp_folder]);
+    
+    mkdir.on('exit', function(){
+       var tar = spawn('tar', ['-zxvf', tmp_file, '-C', tmp_folder]);
+       
+       tar.on('exit', function(){
+         import_file(tmp_folder + '/BL', function(){
+           var rm = spawn('rm', ['-rf', tmp_file, tmp_folder]);
+           
+           rm.on('exit', function(){
+             process.exit(0);
+           });
+         });
+       });      
+    });
+  });
+}
+
+function import_file(file, callback){
+  var start = new Date().getTime();
+
+  var bar;
+  var path  = '';
   
-  //Loop files
-  flow.serialForEach(files, function(file){
-        
-    //get name and path
-    var name = file.replace(/\/(domains|urls)/, '').replace('/', '_');
-    var full_path = path + '/' + file;
-    
-    //update processbar to show the current name
-    if(bar){
-      bar.format = '$bar; $percentage;% loading ' + name;
-      bar.update(done/total);
-    }
-    
-    //Write all domains in the file into redis
-    redis.writeDomains(name, full_path, this);
-    
-  }, function(){
-    done++;
-    if(bar){
-      if(done == total){
-        var end = new Date().getTime() - start;
-        bar.format = '$bar; $percentage;% DONE in ' + (end / 1000) + 's\n';
+  //check if absolute or relative path
+  if(file[0] != '/'){
+    path = process.cwd() + '/';
+  }
+  path += file;
+
+  //if not quiet, initialize the progress bar
+  if(!program.quiet){
+    bar = require('progress-bar').create(process.stdout);
+  }
+
+
+  if(program.flush){
+    redis.clearDomains();
+  }
+
+
+
+  //find all domains files
+  glob('**/{domains,urls}', {cwd: path, nounique:true}, function(err, files){
+
+    var done = 0;
+    var total = files.length;
+
+    //Loop files
+    flow.serialForEach(files, function(file){
+
+      //get name and path
+      var name = file.replace(/\/(domains|urls)/, '').replace('/', '_');
+      var full_path = path + '/' + file;
+
+      //update processbar to show the current name
+      if(bar){
+        bar.format = '$bar; $percentage;% loading ' + name;
+        bar.update(done/total);
       }
-    
-      //update progressbar
-      bar.update(done/total);
-    }
-  }, function(){
-    //everything is done
-    process.exit(0);
-  }); 
-});
+
+      //Write all domains in the file into redis
+      redis.writeDomains(name, full_path, this);
+
+    }, function(){
+      done++;
+      if(bar){
+        if(done == total){
+          var end = new Date().getTime() - start;
+          bar.format = '$bar; $percentage;% DONE in ' + (end / 1000) + 's\n';
+        }
+
+        //update progressbar
+        bar.update(done/total);
+      }
+    }, function(){
+      //everything is done
+      
+      if(callback){
+        callback();
+      }else{
+        process.exit(0);
+      }
+      
+    }); 
+  });
+}
 
