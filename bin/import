@@ -7,10 +7,12 @@ var spawn   = require('child_process').spawn;
 
 var Redis   = require('../lib/sources/redis');
 
+var shallalist_url = 'http://www.shallalist.de/Downloads/shallalist.tar.gz';
+
 program
   .version('1.0.1')  
   .usage('[options] <path>')
-  .option('-l, --location <url>', 'The shallalist url. Default is http://www.shallalist.de/Downloads/shallalist.tar.gz', 'http://www.shallalist.de/Downloads/shallalist.tar.gz')
+  .option('-l, --location <url>', 'The shallalist url. Default is http://www.shallalist.de/Downloads/shallalist.tar.gz', shallalist_url)
   .option('-s, --server <server>', 'Redis server')
   .option('-p, --port <port>', 'Redis port', parseInt)
   .option('-d, --database <database>', 'Redis database. Default is 0', parseInt)
@@ -19,7 +21,8 @@ program
   .option('--prefix [prefix]', 'Set a prefix.', 'sentry')
   .option('--quiet', 'No output to the terminal')
   .parse(process.argv);
-  
+
+
 //TODO: use config file
   
 var redis   = new Redis({
@@ -31,17 +34,27 @@ var redis   = new Redis({
 });
 
 
+
 program.path = program.args[0];
 
 //check if a path is given
 if(!program.path){
-  download_archive();
+  if(program.location == shallalist_url && !program.quiet){
+    program.confirm('Download from shallalist.org?', function(answer){
+      if(answer){
+        download_archive(program.location);
+      }else{
+        process.exit(0);
+      }
+    });
+  }else{
+    download_archive(program.location);
+  }  
 }else{
   import_file(program.path);
 }
 
-function download_archive(){
-  var url = program.location;
+function download_archive(url){
   var tmp_file = '/var/tmp/shallalist.tar.gz';
   var tmp_folder = '/var/tmp/shallalist';
   var curl = spawn('curl', [url, '-o', tmp_file]);
@@ -104,12 +117,9 @@ function import_file(file, callback){
     bar = require('progress-bar').create(process.stdout);
   }
 
-
   if(program.flush){
     redis.clearDomains();
   }
-
-
 
   //find all domains files
   glob('**/{domains,urls}', {cwd: path, nounique:true}, function(err, files){
