@@ -229,6 +229,30 @@ vows.describe('Rules').addBatch({
   },
   
   
+  'rule with with ip range "10.69.1.0" - "10.71.0.0"':{
+    topic: new Rule({
+      allowed:false,
+      ips:['10.69.1.0-10.71.0.0']
+    }, core),
+    'matches': {
+      topic: function(rule){
+        rule.isAllowed(addOptions({url:'http://google.com', ip: '10.70.254.55'}), _w(this.callback));
+      },
+      '10.70.254.55': function(t){
+        assert.equal(t, 'default.com');
+      }
+    },
+    'doesn\'t match':{
+      topic: function(rule){
+        rule.isAllowed(addOptions({url:'http://google.com', ip:'10.68.2.13'}), _w(this.callback));
+      },
+      '10.68.2.13': function(t){
+        assert.isNull(t);
+      }
+    }
+  },
+  
+  
   'rule with group "CN=Keinporn,CN=Users,DC=dabeach,DC=lan"':{
     topic: new Rule({
       allowed:false,
