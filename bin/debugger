@@ -11,6 +11,7 @@ program
   .option('--redis-host <host>', 'The host or IP of the Redis server')
   .option('--redis-port <port>', 'The port of the Redis server')
   .option('--redis-password <password>', 'Authentication secret for Redis')
+  .option('-u, --urls', 'Show urls instead of domains')
   .parse(process.argv);
 
 var redis, config;
@@ -112,12 +113,29 @@ function logObject(obj){
   //rule
   if(obj.rule && obj.options){
     tmp.push(obj.allowed ? 'allow' : 'redirect');
-    tmp.push(obj.options.domain);
+    
+    if(program.urls){
+      tmp.push(obj.options.url);
+    }else{
+      tmp.push(obj.options.domain);
+    }
+    
     
     if(obj.redirect){
-      tmp.push('to');                 ....
+      tmp.push('to');
       tmp.push(obj.redirect);
     }
+    
+    tmp.push('\t');
+    tmp.push('[');
+    tmp.push('RULE:' + obj.rule);
+    if(obj.options.username){
+      tmp.push('USER:' + obj.options.username);
+    }
+    if(obj.options.ip){
+      tmp.push('IP:' + obj.options.ip);
+    }
+    tmp.push(']');
   }
   
   if(obj.error){
@@ -132,6 +150,11 @@ function logObject(obj){
     if(obj.stack){
       tmp.push('\nStack:\n' + obj.stack);
     }   
+  }
+  
+  if(obj.rules){
+    tmp.push('Loaded rules: ' + obj.rules.join(', '));
+    tmp.push('-- from sources: ' + obj.loaded_sources.join(', '));
   }
   
   console.log(tmp.join(' '));
