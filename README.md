@@ -61,7 +61,7 @@ Add the following to your ```squid.conf```
 
     redirect_program sentry your/config/file.json
     redirect_children 1
-    redirect_concurrency 1
+    redirect_concurrency 100
 
 ## Rules
 The first rule that matches (e.g. all given criteria matches) will be executed (Deny or Allow).
