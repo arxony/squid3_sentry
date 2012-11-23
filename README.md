@@ -43,6 +43,7 @@ Params:
     
 
 * ```redirect```: The url to redirect the user if something is blocked
+* ```mode```: Global mode for ```redirect``` or ```rewrite```. See ```mode``` in rules definition.
 * ```log```: Path to the log file. [Bunyan](https://github.com/trentm/node-bunyan) is used as a logger.
 * ```cache_time```: Cache time in milliseconds. Cache will be cleated after that time (e.g. 300000 for 5 mins)
 * ```ldap url```: The url to your ldap server (e.g. ```ldap://domain.local```)
