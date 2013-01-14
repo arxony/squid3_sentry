@@ -1,7 +1,6 @@
 {
   "name": "test",
   "redirect": "github.com/search?q=[domain]",
-  "mode": "redirect",
   "rules":[{
     "name": "allow github",
     "matches": ["*gitub*"]

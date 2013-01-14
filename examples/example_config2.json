@@ -9,8 +9,7 @@
     "url": "ldap://10.20.30.66:389",
     "dn": "CN=ldap_auth,CN=Users,DC=dabeach,DC=lan",
     "password": "ooDahs0i",
-    "base": "DC=dabeach,DC=lan",
-	"user_attribute": "sAMAaccountName"
+    "base": "DC=dabeach,DC=lan"
   },
   "redis":{
     "host":"10.20.30.102"
