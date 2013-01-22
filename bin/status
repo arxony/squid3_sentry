@@ -92,7 +92,7 @@ if(program.args[0]){
           
           if(msg == 'test:ok'){
             clearTimeout(test_timeout);
-            console.log('✓ Sentry: runnning');
+            console.log('✓ Sentry: running');
                         
             done--;
             if(done == 0) process.exit(0);
