@@ -54,7 +54,7 @@ function createChild(file){
   }
   
   
-  var child = spawn(__dirname + '/sentry', [file], { stdio: [null, process.stdout, process.stderr] });
+  var child = spawn(__dirname + '/sentry', [file]); //, { stdio: [null, process.stdout, process.stderr] });
       
   if(config.range){
     child.types = [];
@@ -63,6 +63,12 @@ function createChild(file){
   }
   
   child.config = config;
+              
+              
+  child.stdout.on('data', function(data){
+    process.stdout.write(data);
+  });
+              
                   
   return child;
 }
