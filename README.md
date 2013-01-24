@@ -169,4 +169,4 @@ You can also use the ```balancer``` script to create a separate context for diff
 E.g. 10.20.30.0/24 should have a different set of rules than 192.168.0.0/24.
 Create a config file for every subnet and put the subnet definition into the ```range``` config option and start the blancer with the following command:
 
-    $ balancer subnet1.json config.json subnet2.json
+    $ balancer subnet1.json subnet2.json
