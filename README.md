@@ -46,6 +46,7 @@ Params:
 * ```mode```: Global mode for ```redirect``` or ```rewrite```. See ```mode``` in rules definition.
 * ```log```: Path to the log file. [Bunyan](https://github.com/trentm/node-bunyan) is used as a logger.
 * ```cache_time```: Cache time in milliseconds. Cache will be cleated after that time (e.g. 300000 for 5 mins)
+* ```range```: This will used for the balancer only (See Balancer)
 * ```ldap url```: The url to your ldap server (e.g. ```ldap://domain.local```)
 * ```ldap dn```: The path to the user which will query your ldap directory (e.g. ```CN=MyUser,CN=Users,DC=domain,DC=local```)
 * ```ldap password```: The password for that user
@@ -157,3 +158,15 @@ Use the ```import``` script to import shallalist into redis
 Use the ```debugger``` script for life debugging
 
     $ debugger config.json
+    
+## Balancer
+Use the ```balancer``` script for round robin style balancing
+The following command will start a balancer with 3 sentry processes:
+
+    $ balancer config.json config.json config.json
+    
+You can also use the ```balancer``` script to create a separate context for different subnets.
+E.g. 10.20.30.0/24 should have a different set of rules than 192.168.0.0/24.
+Create a config file for every subnet and put the subnet definition into the ```range``` config option and start the blancer with the following command:
+
+    $ balancer subnet1.json config.json subnet2.json

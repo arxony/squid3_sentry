@@ -1,6 +1,8 @@
 {
   "name": "test",
   "redirect": "github.com/search?q=[domain]",
+  "range": "10.20.40.0/24",
+  "log": false,
   "rules":[{
     "name": "allow github",
     "matches": ["*gitub*"]
