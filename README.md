@@ -160,7 +160,7 @@ Use the ```debugger``` script for life debugging
     $ debugger config.json
     
 ## Balancer
-Use the ```balancer``` script for round robin style balancing
+Use the ```balancer``` script for round robin style balancing.
 The following command will start a balancer with 3 sentry processes:
 
     $ balancer config.json config.json config.json
