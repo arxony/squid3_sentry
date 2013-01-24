@@ -120,25 +120,27 @@ You could configure your rules with any of the following criteria:
  * month
  * year
 
-### Custom rules
+### Custom rule definitions
 To extend sentry and add custom rules take a look at ```lib/rules/```
 
 Example rule which will deny every second request
     
     Squid.start(config);
     Squid.core.addRuleDefinition({
-      type: 'misc', //there are 3 types: dest, src, misc
       name: 'my_rule_def',
 
+      //will be called once for every rule - in the context of the rule.
       config: function(options){
         //This rule definition is active (filter will be called!)
         this.types.push('my_rule_def');
         this.allow_next = true;
       },
 
+      //will be called for every request for every rule where my_rule_def is active
       filter: function(options, callback){
         //Return true if the rule definition matches.
         callback(null, this.allow_next);
+        //Alternate every request
         this.allow_next = !this.allow_next;
       }
     });
