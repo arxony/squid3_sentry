@@ -7,7 +7,7 @@
     "author": "Philipp Waldmann <philipp.waldmann@s-team.at>",
     "repository": {
       "type": "git",
-      "url": "git://github.com/PhilWaldmann/squid3_sentry.git"
+      "url": "git://github.com/s-team/squid3_sentry.git"
     },
     "dependencies": {
         "redis": "=0.7.2",
