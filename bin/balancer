@@ -102,6 +102,8 @@ function callChildren(chunk){
         params.url = 'https://' + params.url;
       }
     
+      var rule_responded = false;
+    
       for(var x in children){
         if((children[x].ip_filter && ip.filter.call(children[x], params)) || !children[x].ip_filter){
           children[x].parts = children[x].parts || [];
@@ -109,8 +111,14 @@ function callChildren(chunk){
 
           //put current child at the end for a round robin effect
           children.push(children.shift());
+          rule_responded = true;
           break;
         }
+      }
+      
+      if(!rule_responded){
+        //No rule found! Respond with an "allowed"!
+        process.stdout.write(parts[i].split(' ')[0] + '\n');
       }
     }else{
       if(parts[i].length > 1){
