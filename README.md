@@ -53,7 +53,7 @@ Params:
 
 for debugging:
 
-* ```messure_times```: The amount of time for every request will be  messured. The times are visible in the debugger (See Live Debugging)
+* ```measure_times```: The amount of time for every request will be  messured. The times are visible in the debugger (See Live Debugging)
 * ```dry_run```: Runs sentry in test mode. Every request is allowed, but sentry still checks it's rules! (See Live Debugging)
 
 ## Configuration (squid3)
