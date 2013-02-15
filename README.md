@@ -36,12 +36,6 @@ Config files need to be written in json (See examples folder)
 Params:
 
 * ```name```: The name of your instance. This is optional if you just have one squid instance!
-* ```explain```: To start sentry in verbose mode (true/false). This will not work with squid!!
- 
-    ```$ sentry --explain
-    0 http://blocked.domain.com 127.0.0.1 username GET```
-    
-
 * ```redirect```: The url to redirect the user if something is blocked
 * ```mode```: Global mode for ```redirect``` or ```rewrite```. See ```mode``` in rules definition.
 * ```log```: Path to the log file. [Bunyan](https://github.com/trentm/node-bunyan) is used as a logger.
@@ -57,6 +51,10 @@ Params:
 * ```rule_sources```: Array of sources. Currently only 'config' and 'redis' is available. The rules are positioned depending on the source position in the array
 * ```rules```: Array of rule definitions. (only via config file)
 
+for debugging:
+
+* ```messure_times```: The amount of time for every request will be  messured. The times are visible in the debugger (See Live Debugging)
+* ```dry_run```: Runs sentry in test mode. Every request is allowed, but sentry still checks it's rules! (See Live Debugging)
 
 ## Configuration (squid3)
 Add the following to your ```squid.conf```

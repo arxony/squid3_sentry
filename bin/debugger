@@ -2,6 +2,7 @@
 
 var program = require('commander');
 var spawn   = require('child_process').spawn;
+var util    = require('util');
 var Redis   = require('../lib/sources/redis');
 
 program
@@ -112,6 +113,8 @@ function logObject(obj){
   
   //rule
   if(obj.rule && obj.options){
+    
+    
     tmp.push(obj.allowed ? 'allow' : 'redirect');
     
     if(program.urls){
@@ -135,6 +138,14 @@ function logObject(obj){
     if(obj.options.ip){
       tmp.push('IP:' + obj.options.ip);
     }
+    if(obj.options.id){
+      tmp.push('ID:' + obj.options.id);
+    }
+    
+    if(obj.used_time){
+      tmp.push('TIME:' + (obj.used_time / 1000) + 's');
+    }
+    
     tmp.push(']');
   }
   
@@ -155,6 +166,11 @@ function logObject(obj){
   if(obj.rules){
     tmp.push('Loaded rules: ' + obj.rules.join(', '));
     tmp.push('-- from sources: ' + obj.loaded_sources.join(', '));
+  }
+  
+  if(obj.type){
+    tmp.push(obj.type);
+    tmp.push(util.inspect(obj.options, true, 1, true).replace(/(\r\n|\n|\r)/gm, '').replace('{', '[').replace('}', ']'));
   }
   
   console.log(tmp.join(' '));
