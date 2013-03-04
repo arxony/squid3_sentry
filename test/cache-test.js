@@ -38,7 +38,7 @@ vows.describe('Cache').addBatch({
       assert.isObject(t);
     },
     'correct user': function(t){
-      assert.equal(t.dn, 'CN=Test test,OU=LBS,OU=Schulen,DC=dabeach,DC=lan');
+      assert.equal(t.dn, 'CN=Test test,OU=Kustoden,OU=102030,OU=Krems,OU=LBS,OU=Schulen,DC=dabeach,DC=lan');
       assert.isArray(t.memberOf);
       assert.notEqual(t.memberOf.indexOf('CN=Keinporn,CN=Users,DC=dabeach,DC=lan'), -1);
     },
@@ -50,7 +50,7 @@ vows.describe('Cache').addBatch({
         assert.isObject(t);
       },
       'correct user': function(t){
-        assert.equal(t.dn, 'CN=Test test,OU=LBS,OU=Schulen,DC=dabeach,DC=lan');
+        assert.equal(t.dn, 'CN=Test test,OU=Kustoden,OU=102030,OU=Krems,OU=LBS,OU=Schulen,DC=dabeach,DC=lan');
         assert.isArray(t.memberOf);
         assert.notEqual(t.memberOf.indexOf('CN=Keinporn,CN=Users,DC=dabeach,DC=lan'), -1);
       },

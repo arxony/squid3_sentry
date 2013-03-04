@@ -36,9 +36,15 @@ if(program.args[0]){
   
   try{
     config = require(path);
+    readLogfile();
   }catch(e){
-    console.log('config file not valid json!');
-    process.exit(0);
+    //console.log('config file not valid json!');
+    //process.exit(0);
+    config = {
+      log: path
+    };
+    
+    readLogfile(true);
   }
 }else{
   
@@ -50,46 +56,78 @@ if(program.args[0]){
 }
 
 
-if(!config.redis){
-  console.log('Redis not configured!');
-  process.exit(0);
-}
-
-if(typeof config.log != 'string'){
-  console.log('No log file defined!');
-  process.exit(0);
-}
 
 
-redis = new Redis(config.redis);
-
-//tell the target to start debugging mode
-redis.client.publish(config.name, 'start debugger');
-
-tail = spawn('tail', ['-f', '-n', 0, config.log]);
-tail.stdout.on('data', function(data){
-  var chunks = data.toString().split('\n');
-  chunks.pop();
-  try{
-    var objs = JSON.parse('[' + chunks.join(',') + ']');
-    
-    for(var i in objs){
-      var obj = objs[i];
-      logObject(obj);
-    }
-  }catch(e){
-    console.log('[' + chunks.join(',') + ']');
-    console.log(e);
+function readLogfile(use_less){
+  if(!config.redis && use_less !== true){
+    console.log('Redis not configured!');
+    process.exit(0);
   }
-});
+
+  if(typeof config.log != 'string'){
+    console.log('No log file defined!');
+    process.exit(0);
+  }
+
+  if(config.redis){
+    redis = new Redis(config.redis);
+
+    //tell the target to start debugging mode
+    redis.client.publish(config.name, 'start debugger');
+  }
+
+  if(!use_less) tail = spawn('tail', ['-f', '-n', 0, config.log]);
+  if(use_less){
+    //require('tty').setRawMode(false);
+    tail = spawn('more', [config.log]);
+  }
+  
+  tail.stdout.on('data', function(data){
+    var chunks = data.toString().split('\n');
+    chunks.pop();
+        
+    for(var i in chunks){
+      try{
+        var obj = JSON.parse(chunks[i]);
+        logObject(obj);
+      }catch(e){
+        
+      }
+    }
+    /*
+    try{
+      var objs = JSON.parse('[' + chunks.join(',') + ']');
+    
+      for(var i in objs){
+        var obj = objs[i];
+        logObject(obj);
+      }
+    }catch(e){
+      console.log('---->', chunks, '<----');
+      console.log(e);
+        process.exit(0);
+    }
+    */
+  });
 
 
-process.on('SIGINT', function () {
-  //tell the target to stop debugging mode
-  redis.client.publish(config.name, 'stop debugger');
-  redis.close();
-  process.exit(0);
-});
+  process.on('SIGINT', function () {
+    //tell the target to stop debugging mode
+    if(redis){
+      redis.client.publish(config.name, 'stop debugger');
+      redis.close();
+    }
+    
+    
+    console.log('AVG TIME:' + (times/entries/1000) + 's');
+    
+    
+    //require('tty').setRawMode(true);
+    process.exit(0);
+  });  
+}
+
+
   
 
 var level = {
@@ -100,6 +138,9 @@ var level = {
   50: 'ERROR',
   60: 'FATAL'
 };
+
+var times = 0;
+var entries = 0;
 
 function logObject(obj){
   var tmp = [obj.time];
@@ -144,6 +185,8 @@ function logObject(obj){
     
     if(obj.used_time){
       tmp.push('TIME:' + (obj.used_time / 1000) + 's');
+      times += obj.used_time
+      entries++;
     }
     
     tmp.push(']');
