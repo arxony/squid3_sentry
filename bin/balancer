@@ -68,6 +68,11 @@ function createChild(file){
   child.stdout.on('data', function(data){
     process.stdout.write(data);
   });
+  
+  child.on('exit', function(code, signal){
+    children.splice(children.indexOf(child), 1);
+    children.push(createChild(file));
+  });
               
                   
   return child;
