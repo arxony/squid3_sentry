@@ -42,7 +42,7 @@ if(program.args[0]){
 
 function createChild(file){
   var path = file;
-  if(file != '/'){
+  if(file[0] != '/'){
     path = process.cwd() + '/' + path;
   }
   
