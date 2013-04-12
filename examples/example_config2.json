@@ -11,23 +11,25 @@
   "cache_time": 300000,
   "timeout": 1000,
   "ldap":{
-    "url": "ldap://10.20.30.66:389",
-    "dn": "CN=ldap_auth,CN=Users,DC=dabeach,DC=lan",
-    "password": "ooDahs0i",
-    "base": "DC=dabeach,DC=lan"
+    "url": "ldap://10.20.30.68:389",
+    "dn": "cn=admin,dc=heime,dc=lan",
+    "password": "48645613548",
+    "base": "DC=heime,DC=lan",
+    "ldap_type":"openLdap"       
   },
   "redis":{
     "host":"localhost",
     "_host":"10.20.30.102"
   },
   "rules":[{
-    "name": "whitelist",
-    "allowed": true,
-    "category_files": ["test/domain_files/white"]
+    "name":"recursive group",
+    "groups":["CN=316131_Lehrer,OU=Lehrer,OU=HS1,OU=Erdberg,OU=Test-Schule,DC=noeb,DC=local", "CN=316131_Kustoden,OU=Kustoden,OU=HS1,OU=Erdberg,OU=Test-Schule,DC=noeb,DC=local"],
+    "allowed": false,
+    "redirect": "your-are-in-the-group"
   },{
-    "name": "blacklist",
-    "category_files": ["test/domain_files/black"],
-    "mode": "rewrite"
+    "name":"fail on OU",
+    "allowed": false,
+    "ous": "OU=Kustoden,OU=HS1,OU=Erdberg,OU=Test-Schule,DC=noeb,DC=local"
   },{
     "name": "default block",
     "categories": ["aggressive","costtraps","dating","dynamic","fortunetelling","gamble","hacking","porn","redirector","remotecontrol","ringtones","spyware","tracker","violence","warez","webphone"],
