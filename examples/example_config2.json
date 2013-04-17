@@ -1,6 +1,6 @@
 {
   "name": "test2",
-  "redirect": "http://310015h0.noeb.local/proxy/access_denied.php?caddr=[ip]&url=[url]",
+  "redirect": "http://310015h0.noeb.local/proxy/access_denied.php?caddr=[ip]&url=[url]&categories=[categories]&name=[name]",
   "rule_sources": ["redis", "config"],
   "log": "squid_noeb.log",
   "log_level": "info",
@@ -22,18 +22,8 @@
     "_host":"10.20.30.102"
   },
   "rules":[{
-    "name":"recursive group",
-    "groups":["CN=316131_Lehrer,OU=Lehrer,OU=HS1,OU=Erdberg,OU=Test-Schule,DC=noeb,DC=local", "CN=316131_Kustoden,OU=Kustoden,OU=HS1,OU=Erdberg,OU=Test-Schule,DC=noeb,DC=local"],
-    "allowed": false,
-    "redirect": "your-are-in-the-group"
-  },{
-    "name":"fail on OU",
-    "allowed": false,
-    "ous": "OU=Kustoden,OU=HS1,OU=Erdberg,OU=Test-Schule,DC=noeb,DC=local"
-  },{
     "name": "default block",
     "categories": ["aggressive","costtraps","dating","dynamic","fortunetelling","gamble","hacking","porn","redirector","remotecontrol","ringtones","spyware","tracker","violence","warez","webphone"],
-    "mode": "rewrite",
-    "groups": ["CN=Keinporn,CN=Users,DC=dabeach,DC=lan"]
+    "mode": "rewrite"
   }]
 }
