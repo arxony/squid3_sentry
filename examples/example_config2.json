@@ -5,6 +5,7 @@
   "log": "squid_noeb.log",
   "log_level": "info",
   "_range": "10.20.30.0/24",
+  "allow_multiple": false,
   "_explain": true,
   "measure_times": true,
   "_dry_run": true,

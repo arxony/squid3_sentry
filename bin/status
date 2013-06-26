@@ -26,6 +26,7 @@ if(program.args[0]){
   config.explain = false;
   config.log = false;
   config.ignore_test = true;
+  config.allow_multiple = true;
   
   var core = Core.getSharedInstance() || new Core(config);
   
@@ -36,7 +37,7 @@ if(program.args[0]){
     var tmp = stdout.split('\n');
     var running = false;
     for(var i in tmp){
-      if(tmp[i].match(/squid3_sentry\/bin\/sentry .+/)) running = true;
+      if(tmp[i].match(/sentry .+/)) running = true;
     }
     if(running){
       console.log('✓ Sentry: process runnning');
@@ -89,10 +90,10 @@ if(program.args[0]){
               
             }, 2000);
           }
-          
-          if(msg == 'test:ok'){
+          var version = msg.match(/version:(.+)/i);
+          if(version){
             clearTimeout(test_timeout);
-            console.log('✓ Sentry: running');
+            console.log('✓ Sentry: running (v. ' + version[1] + ')');
                         
             done--;
             if(done == 0) process.exit(0);
