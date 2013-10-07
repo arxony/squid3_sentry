@@ -1,6 +1,6 @@
 var should = require('should');
 
-var Class = require('../../lib2/types/match');
+var Class = require('../../lib/types/match');
 
 describe('MatchType', function(){
   

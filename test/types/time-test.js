@@ -1,6 +1,6 @@
 var should = require('should');
 
-var Class = require('../../lib2/types/time');
+var Class = require('../../lib/types/time');
 
 describe('Time', function(){
   isUsedHelper(Class, ['time', 'times'], [{week:23}, {year:2013}]);

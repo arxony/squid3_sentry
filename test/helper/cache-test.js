@@ -1,6 +1,6 @@
 var should = require('should');
 
-var Class = require('../../lib2/helper/cache');
+var Class = require('../../lib/helper/cache');
 
 describe('CacheHelper', function(){  
   var helper = new Class(sentry, {});
@@ -22,6 +22,19 @@ describe('CacheHelper', function(){
   });
   
   
+  describe('#exists()', function(){
+    helper.set('key', 'value');
+    it('the value exists', function(){
+      helper.exists('key').should.be.true;
+    });
+    
+    helper.set(['key', 'subkey'], 'value2');
+    it('the value exists with a complex key', function(){
+      helper.exists(['key', 'subkey']).should.be.true;
+    });
+  });
+  
+  
   describe('#lock()', function(){
     helper.lock('key2');
     var set = false;
@@ -38,8 +51,7 @@ describe('CacheHelper', function(){
         helper.set('key2', 'value');      
       });
       
-    });
-            
+    });            
   }); 
   
   

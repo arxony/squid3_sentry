@@ -1,6 +1,6 @@
 var should = require('should');
 
-var Class = require('../../lib2/types/ou');
+var Class = require('../../lib/types/ou');
 
 describe('OU', function(){
   isUsedHelper(Class, ['ou', 'ous'], ['ou=test,dc=sentry,dc=local', 'ou=user,dc=sentry,dc=local']);

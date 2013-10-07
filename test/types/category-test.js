@@ -1,6 +1,6 @@
 var should = require('should');
 
-var Class = require('../../lib2/types/category');
+var Class = require('../../lib/types/category');
 
 describe('Category', function(){
   isUsedHelper(Class, ['category', 'categories'], ['foo', 'bar']);

@@ -1,6 +1,6 @@
 var should = require('should');
 
-var Class = require('../../lib2/types/ip');
+var Class = require('../../lib/types/ip');
 
 describe('IP', function(){
   isUsedHelper(Class, ['ip', 'ips'], ['10.20.30.40', '192.168.0.1']);

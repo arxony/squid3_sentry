@@ -1,4 +1,4 @@
-var Sentry = require('../lib2');
+var Sentry = require('../lib');
 
 
 global.sentry = new Sentry({

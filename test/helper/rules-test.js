@@ -1,6 +1,6 @@
 var should = require('should');
 
-var Class = require('../../lib2/helper/rules');
+var Class = require('../../lib/helper/rules');
 
 describe('RulesHelper', function(){  
   

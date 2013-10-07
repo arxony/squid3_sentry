@@ -1,6 +1,6 @@
 var should = require('should');
 
-var Class = require('../../lib2/types/file_type');
+var Class = require('../../lib/types/file_type');
 
 describe('FileType', function(){
   isUsedHelper(Class, ['file_type', 'file_types'], ['pdf', 'exe']);

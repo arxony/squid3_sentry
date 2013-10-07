@@ -2,7 +2,7 @@ var should = require('should');
 var fs     = require('fs');
 
 
-var Class = require('../../lib2/types/category_file');
+var Class = require('../../lib/types/category_file');
 
 describe('CategoryFile', function(){  
   isUsedHelper(Class, ['category_file', 'category_files'], ['test/blocklists/foo.txt', 'bar.txt']);

@@ -2,7 +2,7 @@ var should = require('should');
 var fs     = require('fs');
 
 
-var Class = require('../../lib2/helper/redis');
+var Class = require('../../lib/helper/redis');
 
 describe('RedisHelper', function(){  
   var helper = new Class(sentry, {

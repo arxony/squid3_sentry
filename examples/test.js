@@ -1,6 +1,6 @@
 var Faye = require('faye');
 
-var Sentry = require('../lib2');
+var Sentry = require('../lib');
 var sentry = new Sentry({
   redis:{
     in_memory: false,
@@ -41,13 +41,13 @@ var sentry = new Sentry({
 
 sentry.rules.add({
   _match: 'foo',  
-  _categories: ['porn', 'bla', 'foo', 'bar'],
+  categories: ['porn', 'bla', 'foo', 'bar'],
   _ou: 'OU=Test,DC=sentry,DC=local',
   _user: 'huberhans',
   _file_type: 'pdf',
   _group: 'cn=group, dc=sentry, dc=local',
   _ip: ['10.20.0.0/24', '10.20.30.0/24'],
-  time: {year: '2011-2013', week: 38},
+  _time: {year: '2011-2013', week: 38},
   allowed: false,
   redirect: 'Foo.com'
 });

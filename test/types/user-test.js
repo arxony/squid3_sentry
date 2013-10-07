@@ -1,6 +1,6 @@
 var should = require('should');
 
-var Class = require('../../lib2/types/user');
+var Class = require('../../lib/types/user');
 
 describe('User', function(){
   isUsedHelper(Class, ['user', 'users'], ['phil', 'michl']);
