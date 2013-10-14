@@ -1,6 +1,12 @@
 var Sentry = require('../lib');
 
 
+var blanket = require("blanket")({  
+  pattern: '/lib/'
+});  
+   
+   
+
 global.sentry = new Sentry({
   redis:{
     in_memory: true,
