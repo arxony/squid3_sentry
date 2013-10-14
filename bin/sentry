@@ -1,0 +1,44 @@
+#!/usr/bin/env node
+
+var program = require('commander');
+var Sentry  = require('../lib');
+
+program
+  .version('2.0.0')  
+  .usage('[options] [config.json]')
+  .parse(process.argv);
+
+if(program.args[0]){
+  var config;
+  var path = program.args[0];
+  
+  if(path[0] != '/'){
+    path = process.cwd() + '/' + path;
+  }
+  
+  try{
+    config = require(path);
+  }catch(e){
+    console.error('The provided config file is not valid json!');
+    process.exit(0);
+  }
+  
+  config.provider = config.provider || 'icap';
+  var Provider;
+  
+  if(config.provider == 'squid' || config.provider.type == 'squid'){
+    Provider = require('../lib/provider/squid');
+  }else{
+    Provider = require('../lib/provider/icap');
+  }
+    
+  var sentry = new Sentry(config);
+  var provider = new Provider(config.provider);
+  
+  provider.use(sentry);
+  provider.start();  
+  
+}else{
+  console.error('No config file given!');
+  process.exit(0);
+}
