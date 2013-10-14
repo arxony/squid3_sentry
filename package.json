@@ -19,7 +19,8 @@
         "commander": "2.x",
         "netmask": "0.0.x",
         "ldapjs": ">=0.5.x",
-        "winston": "0.7.x"
+        "winston": "0.7.x",
+        "icap": "latest"
     },
     "devDependencies": {
         "mocha": ">= 1.13.0",
@@ -37,7 +38,8 @@
     },
     "scripts": {
         "test": "./node_modules/.bin/mocha --reporter spec --recursive",
-        "start": "dox-foundation --source lib --target docs"
+        "start": "dox-foundation --source lib --target docs",
+        "scripts": { "travis-cov": { "threshold": 70 } }
     },
     "engines": {
         "node": ">=0.8.7"
