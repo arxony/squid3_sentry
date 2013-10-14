@@ -1,0 +1,25 @@
+{
+    "name": "sentry1",
+    
+    "log": {
+      
+    },
+    
+    "cache": {
+      
+    },
+    
+    "redis": {
+      
+    },
+    "faye": {
+      
+    },
+    "ldap": {
+      
+    },
+    
+    "rules": {
+      
+    }
+}
