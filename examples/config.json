@@ -2,24 +2,75 @@
     "name": "sentry1",
     
     "log": {
+      "file": "sentry.log",
+      "level": "debug",
       
+      "redis":{
+        "file": "warn.log",
+        "level": "warn",
+        "console": true
+      },
+      
+      "rules":{
+        "file": {
+          "level": "debug",
+          "filename": "rules_debug.log" 
+        },
+        "console":{
+          "level": "warn"
+        }
+      }
     },
     
     "cache": {
-      
+      "clear_time": 300000
     },
     
     "redis": {
+      "prefix": "sentry",
+      "in_memory": true,
       
+      "host": "localhost",
+      "port": 1234,
+      "password": "asdfgh",
+      "database": 0,
+      
+      "db": {
+        "tv": ["orf.at"]
+      }
     },
     "faye": {
-      
+      "port": 1234,
+      "url": "http://faye.server.com/",
+      "mount": "/sentry1"
     },
     "ldap": {
+      "url": "ldap://10.20.30.71:389",
+      "dn": "dn=admin",
+      "password": "passwd",
+      "base": "dc=sentry, dc=local",
+      "maxConnections": 10,
+      "ldap_type": "AD",
       
+      "in_memory": true,
+      "port": 12345,
+      "db": {}
     },
     
     "rules": {
-      
+      "_redirect": "http://redirect.com?rule=[name]",
+      "items": [{
+        "name": "block orf",
+        "match": ["*orf.at*", "*fbstatic*", "*facebook*"],
+        "ip": "10.20.30.0/24",
+        "categories": "tv"
+      }],
+      "timeout": 1000
+    },
+    
+    "run_as": {
+      "type": "icap",
+      "port": 1344,
+      "template": "./examples/template.html"
     }
 }
