@@ -1,44 +1,41 @@
 #!/usr/bin/env node
 
 var program = require('commander');
-var Sentry  = require('../lib');
+var Sentry = require('../lib');
 
-program
-  .version('2.0.0')  
-  .usage('[options] [config.json]')
-  .parse(process.argv);
+program.version('2.0.0').usage('[options] [config.json]').parse(process.argv);
 
-if(program.args[0]){
-  var config;
-  var path = program.args[0];
-  
-  if(path[0] != '/'){
-    path = process.cwd() + '/' + path;
-  }
-  
-  try{
-    config = require(path);
-  }catch(e){
-    console.error('The provided config file is not valid json!');
-    process.exit(0);
-  }
-  
-  config.run_as = config.run_as || 'icap';
-  var Provider;
-  
-  if(config.run_as == 'squid' || config.run_as.type == 'squid'){
-    Provider = require('../lib/provider/squid');
-  }else{
-    Provider = require('../lib/provider/icap');
-  }
-    
-  var sentry = new Sentry(config);
-  var provider = new Provider(config.run_as);
-  
-  provider.use(sentry);
-  provider.start();  
-  
-}else{
-  console.error('No config file given!');
-  process.exit(0);
+if (program.args[0]) {
+	var config;
+	var path = program.args[0];
+
+	if (path[0] !== '/') {
+		path = process.cwd() + '/' + path;
+	}
+
+	try {
+		config = require(path);
+	} catch (e) {
+		console.error('The provided config file is not valid json!');
+		process.exit(0);
+	}
+
+	config.run_as = config.run_as || 'icap';
+	var Provider;
+
+	if (config.run_as === 'squid' || config.run_as.type === 'squid') {
+		Provider = require('../lib/provider/squid');
+	} else {
+		Provider = require('../lib/provider/icap');
+	}
+
+	var sentry = new Sentry(config);
+	var provider = new Provider(config.run_as);
+
+	provider.use(sentry);
+	provider.start();
+
+} else {
+	console.error('No config file given!');
+	process.exit(0);
 }
