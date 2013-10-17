@@ -64,7 +64,7 @@ describe('CacheHelper', function(){
       helper.get('key', function(value){
         should.not.exists(value);
         done();
-      });      
+      });
     });
   
   }); 
