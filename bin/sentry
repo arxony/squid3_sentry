@@ -23,17 +23,17 @@ if(program.args[0]){
     process.exit(0);
   }
   
-  config.provider = config.provider || 'icap';
+  config.run_as = config.run_as || 'icap';
   var Provider;
   
-  if(config.provider == 'squid' || config.provider.type == 'squid'){
+  if(config.run_as == 'squid' || config.run_as.type == 'squid'){
     Provider = require('../lib/provider/squid');
   }else{
     Provider = require('../lib/provider/icap');
   }
     
   var sentry = new Sentry(config);
-  var provider = new Provider(config.provider);
+  var provider = new Provider(config.run_as);
   
   provider.use(sentry);
   provider.start();  
