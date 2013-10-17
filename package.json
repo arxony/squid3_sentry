@@ -21,7 +21,8 @@
         "ldapjs": ">=0.5.x",
         "winston": "0.7.x",
         "icap": "latest",
-        "mustache": ">= 0.7.x"
+        "mustache": ">= 0.7.x",
+        "blanket": "latest"
     },
     "devDependencies": {
         "mocha": ">= 1.13.0",
