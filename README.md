@@ -1,6 +1,6 @@
 # squid3_sentry
 
-a redirect_program for squid3 (like squidGuard, but more flexible)
+a redirect_program and icap Server for squid3 (like squidGuard, but more flexible)
 
 ## Highlights
 * Pure Javascript
