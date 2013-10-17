@@ -1,5 +1,3 @@
-var Faye = require('faye');
-
 var Sentry = require('../lib');
 var sentry = new Sentry({
   redis:{
