@@ -1,0 +1,49 @@
+<html>
+<head>
+<title>Zugriff verweigert</title>
+<style type="text/css">
+body {
+  font-family: Verdana, Arial, sans-serif;
+}
+p.clientdetails {
+  color: gray;
+  font-style: italic;
+  font-size: 10px;
+}
+.url {
+  background-color: maroon;
+  border: 1px solid red;
+  padding: 30 10 30 10;
+  color: white;
+}
+a {
+  color: maroon;
+}
+div.explanation {
+  padding-top: 16px;
+  font-size: 12px;
+}
+</style>
+</head>
+<body>
+<h1>Zugriff verweigert</h1>
+<h2 class="url"{{current_options.url}}</h2>
+<p class="clientdetails">client IP {{current_options.ip}}; access logged</p>
+<div class="explanation">
+<p>Blockierende Regel: {{name}}</p>
+<ul>
+  {{#current_options.matches}}
+    {{#match}}<li>Matches: {{match}}</li>{{/match}}
+    {{#categories}}<li>Kategorie: {{categories}}</li>{{/categories}}
+    {{#file_type}}<li>Dateityp: {{file_type}}</li>{{/file_type}}
+    {{#ip}}<li>IP: {{ip}}</li>{{/ip}}
+    {{#ou}}<li>Ordner: {{ou}}</li>{{/ou}}
+  {{/current_options.matches}}
+</ul>
+</div>
+<div class="explanation">
+<p>Die angefragte Seite enth&auml;lt Inhalte welche vom Proxyservice des N&Ouml; Bildungsnetzes blockiert werden.</p>
+<p>Falls Sie der Meinung sind, dass es sich hierbei um einen Fehler handelt, wenden Sie sich bitte an den Kustoden Ihrer Schule.</p>
+</div>
+</body>
+</html>
