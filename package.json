@@ -20,7 +20,8 @@
         "netmask": "0.0.x",
         "ldapjs": ">=0.5.x",
         "winston": "0.7.x",
-        "icap": "latest"
+        "icap": "latest",
+        "mustache": ">= 0.7.x"
     },
     "devDependencies": {
         "mocha": ">= 1.13.0",
@@ -38,8 +39,7 @@
     },
     "scripts": {
         "test": "./node_modules/.bin/mocha --reporter spec --recursive",
-        "start": "dox-foundation --source lib --target docs",
-        "scripts": { "travis-cov": { "threshold": 70 } }
+        "start": "dox-foundation --source lib --target docs"
     },
     "engines": {
         "node": ">=0.8.7"
