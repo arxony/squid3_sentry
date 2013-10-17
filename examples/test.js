@@ -51,14 +51,14 @@ sentry.rules.add({
 });
 
 
-sentry.isAllowed({url:'http://blafoo.com/', username:'huberhans', ip:'10.20.30.25'}, function(allowed){
+sentry.isAllowed({url:'http://blafoo.com/', username:'huberhans', ip:'10.20.30.25'}, function(){
   //console.log(allowed === true ? 'OK' : 'FAILED: ' + allowed);
 });
 
-sentry.isAllowed({url:'http://blafo2o.com/test.pdf', username:'huberhans'}, function(allowed){
+sentry.isAllowed({url:'http://blafo2o.com/test.pdf', username:'huberhans'}, function(){
   //console.log(allowed === true ? 'OK' : 'FAILED: ' + allowed);
 });
 
-sentry.isAllowed({url:'http://blsafodo.com/', username:'huberhans', ip:'10.20.0.25'}, function(allowed){
+sentry.isAllowed({url:'http://blsafodo.com/', username:'huberhans', ip:'10.20.0.25'}, function(){
   //console.log(allowed === true ? 'OK' : 'FAILED: ' + allowed);
 });
